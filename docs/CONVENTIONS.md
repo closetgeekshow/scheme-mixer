@@ -67,4 +67,6 @@ Canonical naming and structural conventions for Scheme Remix Studio. All code, c
 - Every CSS property set inside a paramType option class MUST belong to one of that paramType's `propSetIds`.
 - `compClasses()` MUST always generate `the-component` plus one class per paramType.
 - Template IDs in `index.html` MUST match the IDs used by `document.getElementById()` in `lens.js` and `ui.js`.
-- `config.js` MUST parse `cfg-app`, `cfg-design`, and `cfg-library` and export `APP_CONFIG`, `DESIGN_CONFIG`, and `LIBRARY`.
+- `config.js` MUST fetch `data/app.config.json`, `data/design.config.json`, and `data/library.json`
+  and export `APP_CONFIG`, `DESIGN_CONFIG`, and `LIBRARY`. A dev server is required;
+  `fetch()` does not work on `file://`.
