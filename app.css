@@ -342,7 +342,6 @@
    Shell — Lens
    =========================== */
 @layer shell.lens {
-  
   .lens {
     display: flex;
     flex-direction: column;
@@ -372,8 +371,6 @@
     grid-column: 2;
     grid-row: 2;
   }
-
-  
 
   .lens--maximized {
     position: fixed;
@@ -511,15 +508,50 @@
     background: var(--panel);
     border-top: 1px solid var(--border);
     display: none;
-    justify-content: center;
     align-items: center;
-    height: 48px;
-    gap: 8px;
+    gap: var(--sp-sm);
+    padding: 6px 8px;
+    height: auto;
     flex-shrink: 0;
   }
 
   .mobile-bar.hidden {
     display: none;
+  }
+
+  .mobile-param-strip {
+    flex: 1;
+    display: flex;
+    gap: var(--sp-sm);
+    overflow-x: auto;
+    padding: 2px 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobile-param-strip .param-item {
+    min-width: 180px;
+  }
+
+  .mobile-icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    border: 1px solid var(--border-2);
+    background: var(--panel-2);
+    color: var(--text-dim);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 200ms ease;
+  }
+
+  .mobile-icon-btn:hover {
+    background: var(--accent-bg);
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   .mobile-btn {
@@ -594,6 +626,17 @@
     color: var(--accent);
   }
 
+  .mobile-overlay-actions {
+    padding: 10px 16px 16px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .mobile-btn-apply {
+    width: 100%;
+    text-align: center;
+  }
+
   @media (max-width: 900px) {
     #page {
       grid-template-columns: 1fr;
@@ -611,8 +654,6 @@
     #app {
       grid-column: 1;
       grid-row: 1;
-      padding: var(--sp-md);
-      gap: var(--sp-md);
     }
 
     .mobile-bar {
@@ -644,85 +685,53 @@
     background-image: var(--comp-bg-img);
     background-size: var(--comp-bg-size);
     background-position: var(--comp-bg-pos);
-    backdrop-filter: var(--comp-backdrop);
     color: var(--comp-color);
     font-family: var(--comp-font);
     font-weight: var(--comp-font-weight);
     text-transform: var(--comp-text-transform);
     letter-spacing: var(--comp-letter-spacing);
-    border: var(--comp-border);
     border-radius: var(--comp-radius);
+    border: var(--comp-border);
     box-shadow: var(--comp-shadow);
-    font-size: var(--comp-font-size-base);
-    line-height: var(--comp-line-height);
+    clip-path: var(--comp-clip);
+    backdrop-filter: var(--comp-backdrop);
     transition: var(--comp-motion);
-    min-width: 200px;
     position: relative;
   }
 
-  .the-component::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: var(--comp-noise-url, none);
-    background-size: var(--comp-noise-scale, 100px);
-    opacity: var(--comp-noise-opacity, 0);
-    pointer-events: none;
-    mix-blend-mode: var(--comp-noise-blend, multiply);
-  }
-
   .the-component h2 {
-    margin: 0 0 12px 0;
-    font-size: 1.45rem;
-    font-weight: 800;
-    line-height: 1.1;
+    font-size: calc(var(--comp-font-size-base) * 1.4);
   }
 
   .the-component p {
-    margin: 0 0 22px 0;
-    font-size: 0.88rem;
-    opacity: 0.85;
-    line-height: 1.6;
+    font-size: var(--comp-font-size-base);
+    line-height: var(--comp-line-height);
   }
 
   .comp-actions {
     display: flex;
-    gap: var(--comp-gap);
-    margin-top: auto;
+    gap: 8px;
   }
 
   .comp-btn {
-    padding: var(--btn-padding);
-    background: var(--btn-bg);
-    color: var(--btn-color);
-    border: var(--btn-border);
-    border-radius: var(--btn-radius);
-    box-shadow: var(--btn-shadow);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: var(--comp-motion);
-    clip-path: var(--btn-clip);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .comp-btn:hover {
-    opacity: 0.9;
+    padding: var(--btn-padding);
+    background: var(--btn-bg);
+    color: var(--btn-color);
+    border-radius: var(--btn-radius);
+    border: var(--btn-border);
+    box-shadow: var(--btn-shadow);
+    clip-path: var(--btn-clip);
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
   }
 
   .comp-btn.secondary {
-    opacity: 0.7;
     background: transparent;
     color: var(--comp-color);
-  }
-
-  .comp-btn.secondary:hover {
-    opacity: 1;
   }
 }
 
@@ -731,49 +740,64 @@
    =========================== */
 @layer component.surface {
   .surf-velvet {
-    --comp-bg: #2a2a2a;
-    --comp-color: #e8e8e8;
+    --comp-bg: #1a1a24;
+    --comp-color: #f0f0f5;
     --comp-font: var(--sans);
-    --btn-bg: #404040;
-    --btn-color: #e8e8e8;
+    --btn-bg: #ffffff;
+    --btn-color: #1a1a24;
+    --btn-border: none;
   }
 
   .surf-console {
-    --comp-bg: #001a00;
-    --comp-color: #00ff00;
-    --comp-font: var(--mono);
-    --btn-bg: #003300;
-    --btn-color: #00ff00;
-    --btn-border: 1px solid #00ff00;
+    --comp-bg: #050505;
+    --comp-color: #4af626;
+    --comp-font: "IBM Plex Mono", monospace;
+    --btn-bg: transparent;
+    --btn-color: #4af626;
+    --btn-border: 1px solid #4af626;
   }
 
   .surf-glass {
-    --comp-bg: rgba(255, 255, 255, 0.1);
-    --comp-backdrop: blur(10px);
-    --comp-color: #e8e8e8;
-    --btn-bg: rgba(255, 255, 255, 0.15);
+    --comp-bg: rgba(255, 255, 255, 0.08);
+    --comp-backdrop: blur(16px);
+    --comp-color: #ffffff;
+    --comp-font: var(--sans);
+    --comp-border: 1px solid rgba(255, 255, 255, 0.2);
+    --btn-bg: rgba(255, 255, 255, 0.14);
     --btn-color: #ffffff;
+    --btn-border: 1px solid rgba(255, 255, 255, 0.3);
   }
 
   .surf-frutiger {
-    --comp-bg: #f5f5f5;
-    --comp-color: #1a1a1a;
-    --comp-font: "Frutiger", sans-serif;
-    --btn-bg: #e0e0e0;
-    --btn-color: #1a1a1a;
+    --comp-bg: linear-gradient(
+      180deg,
+      rgba(240, 250, 255, 0.96) 0%,
+      rgba(183, 226, 240, 0.86) 100%
+    );
+    --comp-backdrop: blur(8px);
+    --comp-color: #004488;
+    --comp-font: system-ui, -apple-system, "Segoe UI", sans-serif;
+    --comp-border: 1px solid rgba(255, 255, 255, 0.92);
+    --comp-shadow: inset 0 2px 8px rgba(255, 255, 255, 0.9);
+    --btn-bg: linear-gradient(180deg, #ffffff, #cce8ff);
+    --btn-border: 1px solid #88ccff;
+    --btn-color: #003366;
   }
 
   .surf-memphis {
-    --comp-bg: #ffcc00;
-    --comp-color: #1a1a1a;
-    --comp-font: "Memphis", serif;
+    --comp-bg: #ffeb3b;
+    --comp-bg-img: radial-gradient(#e91e63 2.5px, transparent 2.5px);
+    --comp-bg-size: 16px 16px;
+    --comp-color: #111111;
+    --comp-font: "DM Sans", system-ui, sans-serif;
     --btn-bg: #00e5ff;
     --btn-color: #111111;
+    --btn-border: 3px solid #111111;
   }
 
   .surf-artdeco {
-    --comp-bg: #d4af37;
-    --comp-color: #1a1a1a;
+    --comp-bg: linear-gradient(135deg, #181818 0%, #050505 100%);
+    --comp-color: #d4af37;
     --comp-font: "Playfair Display", serif;
     --comp-text-transform: uppercase;
     --comp-letter-spacing: 2px;
@@ -783,19 +807,26 @@
   }
 
   .surf-grunge {
-    --comp-bg: #7a7a7a;
-    --comp-color: #2a2a2a;
+    --comp-bg: #d8d4c8;
+    --comp-color: #2a2927;
     --comp-font: "Courier New", Courier, monospace;
-    --comp-bg-img: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9"/></filter><rect width="100" height="100" fill="%23666" filter="url(%23n)"/></svg>');
-    --btn-bg: #5a5a5a;
+    --btn-bg: #2a2927;
     --btn-color: #d8d4c8;
+    --btn-border: none;
   }
 
   .surf-holo {
-    --comp-bg: linear-gradient(124deg, #ff9a9e, #fecfef, #a1c4fd, #c2e9fb, #ff9a9e);
+    --comp-bg: linear-gradient(
+      124deg,
+      #ff9a9e,
+      #fecfef,
+      #a1c4fd,
+      #c2e9fb,
+      #ff9a9e
+    );
     --comp-bg-size: 200% 200%;
     --comp-color: #ffffff;
-    --comp-font: var(--sans);
+    --comp-font: "DM Sans", system-ui, sans-serif;
     --comp-shadow: 0 0 24px rgba(255, 255, 255, 0.18);
     --btn-bg: rgba(255, 255, 255, 0.22);
     --btn-border: 1px solid rgba(255, 255, 255, 0.7);
@@ -808,7 +839,7 @@
    =========================== */
 @layer component.shape {
   .shape-pill {
-    --comp-radius: 999px;
+    --comp-radius: 32px;
     --btn-radius: 999px;
   }
 
@@ -823,29 +854,38 @@
   }
 
   .shape-chamfer {
-    --comp-clip: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-    --btn-clip: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
     --comp-radius: 0px;
+    --comp-clip: polygon(
+      24px 0,
+      100% 0,
+      100% calc(100% - 24px),
+      calc(100% - 24px) 100%,
+      0 100%,
+      0 24px
+    );
+    --btn-clip: polygon(
+      10px 0,
+      100% 0,
+      100% calc(100% - 10px),
+      calc(100% - 10px) 100%,
+      0 100%,
+      0 10px
+    );
     --btn-radius: 0px;
   }
 
   .shape-bauhaus {
-    --comp-clip: polygon(0 10%, 10% 0, 90% 0, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0 90%);
-    --btn-clip: polygon(0 20%, 20% 0, 80% 0, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0 80%);
-    --comp-radius: 0px;
-    --btn-radius: 0px;
+    --comp-radius: 40px 0 40px 0;
+    --btn-radius: 20px 0 20px 0;
   }
 
   .shape-concentric {
-    --comp-clip: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    --btn-clip: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
     --comp-radius: 0px;
     --btn-radius: 0px;
   }
 
   .shape-squircle {
-    --comp-radius: 30%;
-    --btn-radius: 25%;
+    --comp-radius: 24px;
   }
 }
 
@@ -855,51 +895,59 @@
 @layer component.depth {
   .depth-flat {
     --comp-shadow: none;
-    --comp-border: 1px solid transparent;
     --btn-shadow: none;
+    --comp-border: 1px solid transparent;
     --btn-border: 1px solid transparent;
   }
 
   .depth-raised {
-    --comp-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-    --comp-border: 1px solid var(--border);
-    --btn-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    --btn-border: 1px solid var(--border);
+    --comp-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    --btn-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
   }
 
   .depth-sunken {
-    --comp-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3);
-    --comp-border: 1px solid var(--border);
-    --btn-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
-    --btn-border: 1px solid var(--border);
+    --comp-shadow: inset 0 12px 28px rgba(0, 0, 0, 0.4);
+    --btn-shadow: inset 0 6px 18px rgba(0, 0, 0, 0.4);
   }
 
   .depth-neumorphic {
-    --comp-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.1);
-    --comp-border: 1px solid transparent;
-    --btn-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    --btn-border: 1px solid transparent;
+    --comp-shadow:
+      16px 16px 32px rgba(0, 0, 0, 0.25),
+      -12px -12px 24px rgba(255, 255, 255, 0.15);
+    --btn-shadow:
+      6px 6px 12px rgba(0, 0, 0, 0.2),
+      -4px -4px 10px rgba(255, 255, 255, 0.1);
+    --comp-border: none;
+    --btn-border: none;
   }
 
   .depth-brutalist {
-    --comp-shadow: none;
-    --comp-border: 3px solid var(--border-2);
-    --btn-shadow: none;
-    --btn-border: 2px solid var(--border-2);
+    --comp-shadow: 12px 12px 0 #000000;
+    --btn-shadow: 6px 6px 0 #000000;
+    --comp-border: 4px solid #000000;
+    --btn-border: 3px solid #000000;
   }
 
   .depth-glowing {
-    --comp-shadow: 0 0 16px rgba(107, 138, 255, 0.5);
-    --comp-border: 2px solid var(--accent);
-    --btn-shadow: 0 0 8px rgba(107, 138, 255, 0.4);
-    --btn-border: 1px solid var(--accent);
+    --comp-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 0 35px rgba(107, 138, 255, 0.9);
+    --btn-shadow: 0 0 22px rgba(107, 138, 255, 0.9);
+    --comp-border: 1px solid rgba(255, 255, 255, 0.4);
+    --btn-border: 1px solid rgba(255, 255, 255, 0.6);
   }
 
   .depth-concentric {
-    --comp-shadow: 0 0 0 8px rgba(107, 138, 255, 0.1), 0 0 0 16px rgba(45, 212, 191, 0.05);
-    --comp-border: 2px solid var(--border-2);
-    --btn-shadow: 0 0 0 4px rgba(107, 138, 255, 0.08);
-    --btn-border: 1px solid var(--border-2);
+    --comp-shadow:
+      inset 0 0 0 4px transparent,
+      inset 0 0 0 5px currentColor,
+      inset 0 0 0 10px transparent,
+      inset 0 0 0 11px currentColor;
+    --comp-border: 1px solid currentColor;
+    --btn-shadow:
+      inset 0 0 0 2px transparent,
+      inset 0 0 0 3px currentColor;
+    --btn-border: 1px solid currentColor;
   }
 }
 
@@ -908,31 +956,31 @@
    =========================== */
 @layer component.motion {
   .mo-velvet {
-    --comp-motion: all 300ms ease;
+    --comp-motion: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .mo-console {
-    --comp-motion: all 150ms linear;
+    --comp-motion: all 150ms steps(4);
   }
 
   .mo-elastic {
-    --comp-motion: all 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    --comp-motion: all 700ms cubic-bezier(0.68, -0.6, 0.32, 1.6);
   }
 
   .mo-glitch {
-    --comp-motion: all 100ms steps(4);
+    --comp-motion: all 120ms steps(3, end);
   }
 
   .mo-float {
-    --comp-motion: all 400ms ease-out;
+    --comp-motion: all 1200ms ease-in-out;
   }
 
   .mo-whip {
-    --comp-motion: all 50ms ease-out;
+    --comp-motion: all 450ms cubic-bezier(0.1, 0.9, 0.2, 1);
   }
 
   .mo-spring {
-    --comp-motion: all 800ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --comp-motion: all 800ms linear;
   }
 }
 
@@ -941,35 +989,35 @@
    =========================== */
 @layer component.density {
   .density-compact {
-    --comp-padding: 16px;
+    --comp-padding: 20px;
     --comp-gap: 8px;
-    --comp-font-size-base: 14px;
+    --comp-font-size-base: 0.82rem;
     --comp-line-height: 1.4;
-    --btn-padding: 6px 12px;
+    --btn-padding: 8px 14px;
   }
 
   .density-normal {
-    --comp-padding: 28px;
-    --comp-gap: 0px;
-    --comp-font-size-base: 1rem;
-    --comp-line-height: 1.6;
-    --btn-padding: 11px 20px;
+    --comp-padding: 24px;
+    --comp-gap: 12px;
+    --comp-font-size-base: 0.9rem;
+    --comp-line-height: 1.5;
+    --btn-padding: 10px 18px;
   }
 
   .density-airy {
-    --comp-padding: 36px;
-    --comp-gap: 12px;
-    --comp-font-size-base: 18px;
-    --comp-line-height: 1.8;
-    --btn-padding: 14px 28px;
+    --comp-padding: 30px;
+    --comp-gap: 16px;
+    --comp-font-size-base: 0.96rem;
+    --comp-line-height: 1.7;
+    --btn-padding: 12px 22px;
   }
 
   .density-wide {
-    --comp-padding: 48px;
-    --comp-gap: 16px;
-    --comp-font-size-base: 20px;
-    --comp-line-height: 2;
-    --btn-padding: 16px 32px;
+    --comp-padding: 36px;
+    --comp-gap: 18px;
+    --comp-font-size-base: 1rem;
+    --comp-line-height: 1.8;
+    --btn-padding: 12px 26px;
   }
 }
 
@@ -989,29 +1037,82 @@
     }
   }
 
-  :root.fx-holo-pan .the-component.surf-holo {
-    animation: holo-pan 6s ease-in-out infinite;
-    background-size: 200% 200%;
+  :root.fx-holo-pan .surf-holo {
+    animation: holo-pan 8s linear infinite;
   }
 }
 
 /* ===========================
-   Effects — Glitch (placeholder)
+   Effects — Glitch
    =========================== */
 @layer effects.glitch {
-  /* Reserved for future glitch-specific effects; none required in Phase 3. */
+  /* Placeholder for future glitch effects; currently unused */
 }
 
 /* ===========================
    Effects — Demo
    =========================== */
 @layer effects.demo {
-  :root.fx-demo .demo-active {
-    transform: scale(1.1) rotateZ(2deg);
+  :root.fx-demo .the-component.mo-velvet.demo-active {
+    transform: translateY(-8px) scale(1.02);
   }
 
-  :root.fx-demo .lens-fixed .the-component:hover {
-    transform: scale(1.05);
+  :root.fx-demo .the-component.mo-console.demo-active {
+    transform: translate(6px, -6px);
+  }
+
+  :root.fx-demo .the-component.mo-elastic.demo-active {
+    transform: scale(1.1) rotate(2deg);
+  }
+
+  :root.fx-demo .the-component.mo-glitch.demo-active {
+    transform: translate(-4px, 4px) skewX(-4deg);
+    filter:
+      drop-shadow(4px 0 0 rgba(255, 0, 0, 0.62))
+      drop-shadow(-4px 0 0 rgba(0, 255, 255, 0.62));
+  }
+
+  :root.fx-demo .the-component.mo-float.demo-active {
+    transform: translateY(-22px);
+  }
+
+  :root.fx-demo .the-component.mo-whip.demo-active {
+    transform: rotate(-6deg) scale(0.95);
+  }
+
+  :root.fx-demo .the-component.mo-spring.demo-active {
+    transform: translateY(12px) scale(0.95);
+  }
+
+  :root.fx-demo .lens-fixed .the-component.mo-velvet:hover {
+    transform: translateY(-8px) scale(1.02);
+  }
+
+  :root.fx-demo .lens-fixed .the-component.mo-console:hover {
+    transform: translate(6px, -6px);
+  }
+
+  :root.fx-demo .lens-fixed .the-component.mo-elastic:hover {
+    transform: scale(1.1) rotate(2deg);
+  }
+
+  :root.fx-demo .lens-fixed .the-component.mo-glitch:hover {
+    transform: translate(-4px, 4px) skewX(-4deg);
+    filter:
+      drop-shadow(4px 0 0 rgba(255, 0, 0, 0.62))
+      drop-shadow(-4px 0 0 rgba(0, 255, 255, 0.62));
+  }
+
+  :root.fx-demo .lens-fixed .the-component.mo-float:hover {
+    transform: translateY(-22px);
+  }
+
+  :root.fx-demo .lens-fixed .the-component.mo-whip:hover {
+    transform: rotate(-6deg) scale(0.95);
+  }
+
+  :root.fx-demo .lens-fixed .the-component.mo-spring:hover {
+    transform: translateY(12px) scale(0.95);
   }
 }
 
@@ -1019,5 +1120,5 @@
    Overrides
    =========================== */
 @layer overrides {
-  /* Empty by design; reserved for browser-specific fixes. */
+  /* Reserved for future tweaks/bugfixes */
 }

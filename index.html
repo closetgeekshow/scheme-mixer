@@ -22,7 +22,13 @@
 
     <main id="app" class="app"></main>
 
-    <div id="mobile-bar" class="mobile-bar hidden">
+    <div id="mobile-bar" class="mobile-bar">
+      <div id="mobile-param-strip" class="mobile-param-strip"></div>
+
+      <button id="mobile-maximize" class="mobile-icon-btn" aria-label="Open parameters">
+        ⤢
+      </button>
+
       <button id="mobile-btn-demo" class="mobile-btn mobile-btn-demo">Demo</button>
     </div>
 
@@ -32,7 +38,12 @@
           <p class="mobile-overlay-title">Parameters</p>
           <button id="mobile-overlay-close" class="mobile-overlay-close">✕</button>
         </div>
+
         <div id="mobile-param-list" class="param-list"></div>
+
+        <div class="mobile-overlay-actions">
+          <button id="mobile-apply" class="mobile-btn mobile-btn-apply">Apply Changes</button>
+        </div>
       </div>
     </div>
 
