@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scheme Remix Studio — Config Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: dark;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #05060a;
+      color: #e4e7f5;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    header p {
+      margin: 0;
+      font-size: 13px;
+      opacity: 0.8;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+    }
+    .left {
+      flex: 1 1 0;
+      border-right: 1px solid rgba(255,255,255,0.16);
+      min-width: 0;
+    }
+    .left iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .right {
+      flex: 1 1 420px;
+      max-width: 520px;
+      min-width: 320px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .section {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .section h2 {
+      margin: 0 0 4px;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .section p {
+      margin: 0;
+      font-size: 12px;
+      opacity: 0.85;
+    }
+    .editor {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      padding: 6px 10px 0;
+    }
+    .tabs button {
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.04);
+      color: inherit;
+      padding: 3px 10px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .tabs button.active {
+      border-color: rgba(129,140,248,1);
+      background: rgba(129,140,248,0.18);
+    }
+    .editor textarea {
+      flex: 1;
+      margin: 6px 10px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: #05060a;
+      color: #e4e7f5;
+      padding: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      resize: vertical;
+      min-height: 0;
+    }
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px 10px;
+    }
+    .actions button {
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.04);
+      color: inherit;
+      padding: 4px 12px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .actions button.primary {
+      border-color: rgba(129,140,248,1);
+      background: rgba(129,140,248,0.2);
+    }
+    .status {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Config Editor</h1>
+      <p>Paste and edit cfg-app, cfg-design, cfg-library JSON. Then apply to the running app iframe.</p>
+    </div>
+    <p id="ua" style="font-size:11px;opacity:0.7;"></p>
+  </header>
+  <main>
+    <section class="left">
+      <iframe id="app-frame" src="index.html"></iframe>
+    </section>
+    <section class="right">
+      <div class="section">
+        <h2>JSON source</h2>
+        <p>Select a block, edit JSON, then click “Apply & reload iframe”. Changes are not written to files; they only affect this session.</p>
+      </div>
+      <div class="editor">
+        <div class="tabs">
+          <button type="button" data-target="cfg-app" class="active">cfg-app</button>
+          <button type="button" data-target="cfg-design">cfg-design</button>
+          <button type="button" data-target="cfg-library">cfg-library</button>
+        </div>
+        <textarea id="json-text"></textarea>
+        <div class="actions">
+          <span class="status" id="status">Waiting for iframe…</span>
+          <div>
+            <button type="button" id="reload-btn">Reload from iframe</button>
+            <button type="button" id="apply-btn" class="primary">Apply & reload iframe</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const uaEl = document.getElementById('ua');
+    uaEl.textContent = navigator.userAgent;
+
+    const iframe = document.getElementById('app-frame');
+    const textarea = document.getElementById('json-text');
+    const statusEl = document.getElementById('status');
+    const reloadBtn = document.getElementById('reload-btn');
+    const applyBtn = document.getElementById('apply-btn');
+    const tabButtons = Array.from(document.querySelectorAll('.tabs button'));
+
+    let currentId = 'cfg-app';
+
+    function setStatus(msg, ok = true) {
+      statusEl.textContent = msg;
+      statusEl.style.color = ok ? '#a5b4fc' : '#f97373';
+    }
+
+    function getFrameDoc() {
+      return iframe.contentDocument || iframe.contentWindow.document;
+    }
+
+    function loadCurrentJson() {
+      try {
+        const doc = getFrameDoc();
+        const el = doc.getElementById(currentId);
+        if (!el) {
+          setStatus(`No <script id="${currentId}"> in iframe`, false);
+          return;
+        }
+        const raw = el.textContent.trim();
+        // Pretty-print if possible
+        try {
+          const obj = JSON.parse(raw);
+          textarea.value = JSON.stringify(obj, null, 2);
+          setStatus(`Loaded ${currentId} from iframe`, true);
+        } catch (e) {
+          // Leave raw if it's not valid JSON for some reason
+          textarea.value = raw;
+          setStatus(`Loaded ${currentId}, but JSON.parse failed: ${e}`, false);
+        }
+      } catch (e) {
+        setStatus('Error accessing iframe: ' + e, false);
+      }
+    }
+
+    function applyCurrentJson() {
+      try {
+        const text = textarea.value.trim();
+        if (!text) {
+          setStatus('Textarea is empty, nothing to apply.', false);
+          return;
+        }
+        // Validate JSON
+        let parsed;
+        try {
+          parsed = JSON.parse(text);
+        } catch (e) {
+          setStatus('JSON.parse error: ' + e.message, false);
+          return;
+        }
+        const doc = getFrameDoc();
+        const el = doc.getElementById(currentId);
+        if (!el) {
+          setStatus(`No <script id="${currentId}"> in iframe`, false);
+          return;
+        }
+        el.textContent = JSON.stringify(parsed, null, 2);
+        // Force reload so config.js re-parses the inline scripts from DOM
+        iframe.contentWindow.location.reload();
+        setStatus(`Applied new ${currentId} JSON; reloading iframe…`, true);
+      } catch (e) {
+        setStatus('Error applying JSON: ' + e, false);
+      }
+    }
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentId = btn.getAttribute('data-target');
+        loadCurrentJson();
+      });
+    });
+
+    reloadBtn.addEventListener('click', loadCurrentJson);
+    applyBtn.addEventListener('click', applyCurrentJson);
+
+    iframe.addEventListener('load', () => {
+      setStatus('Iframe ready. Loaded cfg-app.', true);
+      loadCurrentJson();
+    });
+  </script>
+</body>
+</html>
