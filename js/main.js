@@ -57,7 +57,7 @@ export function applyScheme(schemeId) {
 
   // Toggle capability layers for this scheme
   const root = document.documentElement;
-  for (const entry of APP_CONFIG.capabilityLayerRegistry || []) {
+  for (const entry of APP_CONFIG.capabilityLayerRegistry) {
     if (entry.alwaysOn) continue;
     root.classList.remove(entry.id);
   }
@@ -85,9 +85,10 @@ function wireGlobalButtons() {
   const btnRandomize = document.getElementById('btn-randomize');
   const btnDemo = document.getElementById('btn-demo');
   const mobileDemo = document.getElementById('mobile-btn-demo');
-  const mobileBar = document.getElementById('mobile-bar');
   const mobileOverlay = document.getElementById('mobile-overlay');
   const mobileClose = document.getElementById('mobile-overlay-close');
+  const mobileMax = document.getElementById('mobile-maximize');
+  const mobileApply = document.getElementById('mobile-apply');
 
   if (btnRandomize) btnRandomize.addEventListener('click', randomize);
   if (btnDemo) btnDemo.addEventListener('click', triggerDemo);
@@ -99,9 +100,16 @@ function wireGlobalButtons() {
     });
   }
 
-  if (mobileBar && mobileOverlay) {
-    mobileBar.addEventListener('click', () => {
+  if (mobileMax && mobileOverlay) {
+    mobileMax.addEventListener('click', e => {
+      e.stopPropagation();
       mobileOverlay.classList.remove('hidden');
+    });
+  }
+
+  if (mobileApply && mobileOverlay) {
+    mobileApply.addEventListener('click', () => {
+      mobileOverlay.classList.add('hidden');
     });
   }
 }

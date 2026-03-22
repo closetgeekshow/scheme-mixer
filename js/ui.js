@@ -127,7 +127,14 @@ export function buildApp() {
   buildParamList(sidebarList);
 
   const mobileParamList = document.getElementById('mobile-param-list');
-  buildParamList(mobileParamList);
+  if (mobileParamList) {
+    buildParamList(mobileParamList);
+  }
+
+  const mobileStrip = document.getElementById('mobile-param-strip');
+  if (mobileStrip) {
+    buildParamList(mobileStrip);
+  }
 
   const appContainer = document.getElementById('app');
   appContainer.innerHTML = '';
