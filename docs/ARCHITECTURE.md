@@ -6,8 +6,11 @@ High-level file structure, module graph, and data flow for Scheme Remix Studio.
 
 ```text
 /
+├── README.md
 ├── index.html
 ├── app.css
+├── config-data-files.html   (dev utility: in-browser JSON config editor)
+├── test.html                (dev utility: Phase 6 automated test harness)
 ├── js/
 │   ├── config.js
 │   ├── state.js
@@ -40,11 +43,16 @@ lens.js     ui.js
         main.js
 ```
 
+> **Exception:** `applyDesign()` in `state.js` uses `dynamic import('./lens.js')`
+> to call `updateCamera()` at runtime, avoiding a static circular dependency.
+
 ## Responsibilities
 
-- `index.html` owns the shell structure, inline config blocks, template declarations, and module entry.
+- `index.html` owns the shell structure, template declarations, and module entry point.
 - `app.css` owns all styling using the full 18-layer stack.
-- `js/config.js` parses `cfg-app`, `cfg-design`, and `cfg-library`.
+- `js/config.js` fetches `data/app.config.json`, `data/design.config.json`, and
+  `data/library.json` in parallel using `Promise.all()` with top-level `await`,
+  then exports `APP_CONFIG`, `DESIGN_CONFIG`, and `LIBRARY`.
 - `js/state.js` owns derived state, caches, `compClasses()`, `ensureFontLoaded()`, and `applyDesign()`.
 - `js/lens.js` owns lens DOM construction, camera math, maximize behavior, fit/1x toggle, and the single global pointer tracker.
 - `js/ui.js` owns parameter UI construction and popover behavior.
@@ -52,13 +60,67 @@ lens.js     ui.js
 - `data/app.config.json` contains app behavior.
 - `data/design.config.json` contains propSets, paramTypes, and lenses.
 - `data/library.json` contains presets and schemes.
+- `config-data-files.html` is a standalone dev tool for editing and downloading `data/*.json` files in-browser. Requires a dev server.
+- `test.html` is a standalone test harness that loads `index.html` in an iframe and runs automated + manual checks.
 
 ## Data Flow
 
 1. JSON is authored in `data/*.json`.
-2. It is inlined into `index.html` as `cfg-app`, `cfg-design`, and `cfg-library`.
-3. `config.js` parses and exports the three config objects.
-4. `state.js` derives `state` from paramTypes and `cameras` from lenses.
-5. `buildApp()` constructs the DOM and registers caches.
-6. `applyDesign()` applies the generated classes and re-seats zoom lenses.
-7. Lens interactions update `cameras`; param interactions update `state` and trigger `applyDesign()`.
+2. `config.js` fetches all three files in parallel using `Promise.all()` with
+   top-level `await` and exports `APP_CONFIG`, `DESIGN_CONFIG`, and `LIBRARY`.
+   Requires a dev server — `fetch()` does not work on `file://`.
+3. `state.js` derives `state` from paramTypes and `cameras` from lenses.
+4. `buildApp()` constructs the DOM and registers caches.
+5. `applyDesign()` applies the generated classes and re-seats zoom lenses.
+6. Lens interactions update `cameras`; param interactions update `state` and trigger `applyDesign()`.
+
+## JS Runtime Contracts
+
+### State derivation
+
+```js
+state   = Object.fromEntries(DESIGN_CONFIG.paramTypes.map(p => [p.id, p.options.value]))
+cameras = Object.fromEntries(DESIGN_CONFIG.lenses.map(l => [l.id, { zoom: l.zoom, x: l.x, y: l.y }]))
+```
+
+### Module-level caches
+
+Populated at creation time; never queried in hot paths (no `querySelectorAll` inside
+event handlers or animation frames).
+
+| Cache | Type | Description |
+|---|---|---|
+| `componentEls` | `Set<HTMLElement>` | All `.the-component` instances |
+| `paramSelectMap` | `Map<paramId, Set<HTMLSelectElement>>` | All `<select>` elements per paramType |
+| `lensCache` | `Map<lensId, LensCacheEntry>` | Lens DOM nodes and per-lens runtime state |
+
+`LensCacheEntry` shape:
+
+```ts
+{
+  wrap:           HTMLElement,
+  viewport:       HTMLElement,
+  content:        HTMLElement,
+  comp:           HTMLElement | null,
+  badgeTL:        HTMLElement,
+  badgeBL:        HTMLElement,
+  originCamera:   { zoom: number, x: number, y: number },
+  mode1x:         boolean,
+  resizeObserver: ResizeObserver | null
+}
+```
+
+`originCamera` stores the initial camera position from the lens config so that
+the reset button can restore it without re-reading `DESIGN_CONFIG`.
+`mode1x` tracks the fit/1x toggle state for the fixed lens.
+`resizeObserver` holds the per-viewport `ResizeObserver` instance (zoom lenses only).
+
+### Pointer tracking
+
+One `pointermove` and one `pointerup` listener on `window` — global total.
+No additional per-lens pointer listeners are registered.
+
+```js
+// activeDrag is null when no drag is in progress
+activeDrag = { lensId: string, lastX: number, lastY: number } | null
+```
