@@ -41,40 +41,8 @@
     main {
       flex: 1;
       display: flex;
-      min-height: 0;
-    }
-    .left {
-      flex: 1 1 0;
-      border-right: 1px solid rgba(255,255,255,0.16);
-      min-width: 0;
-    }
-    .left iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-    .right {
-      flex: 1 1 420px;
-      max-width: 520px;
-      min-width: 320px;
-      display: flex;
       flex-direction: column;
       min-height: 0;
-    }
-    .section {
-      padding: 10px 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    .section h2 {
-      margin: 0 0 4px;
-      font-size: 13px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .section p {
-      margin: 0;
-      font-size: 12px;
-      opacity: 0.85;
     }
     .editor {
       flex: 1;
@@ -85,7 +53,7 @@
     .tabs {
       display: flex;
       gap: 4px;
-      padding: 6px 10px 0;
+      padding: 10px 10px 0;
     }
     .tabs button {
       border-radius: 999px;
@@ -102,15 +70,16 @@
     }
     .editor textarea {
       flex: 1;
-      margin: 6px 10px 10px;
+      margin: 8px 10px 0;
       border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.2);
       background: #05060a;
       color: #e4e7f5;
-      padding: 8px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      padding: 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+                   "Liberation Mono", "Courier New", monospace;
       font-size: 12px;
-      resize: vertical;
+      resize: none;
       min-height: 0;
     }
     .actions {
@@ -118,14 +87,14 @@
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      padding: 0 10px 10px;
+      padding: 8px 10px 12px;
     }
     .actions button {
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.2);
       background: rgba(255,255,255,0.04);
       color: inherit;
-      padding: 4px 12px;
+      padding: 4px 14px;
       font-size: 12px;
       cursor: pointer;
     }
@@ -133,9 +102,21 @@
       border-color: rgba(129,140,248,1);
       background: rgba(129,140,248,0.2);
     }
+    .actions button.primary:hover {
+      background: rgba(129,140,248,0.35);
+    }
     .status {
       font-size: 11px;
       opacity: 0.8;
+    }
+    .notice {
+      margin: 10px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: rgba(255,200,0,0.08);
+      border: 1px solid rgba(255,200,0,0.25);
+      font-size: 12px;
+      color: #fde68a;
     }
   </style>
 </head>
@@ -143,129 +124,104 @@
   <header>
     <div>
       <h1>Config Editor</h1>
-      <p>Paste and edit cfg-app, cfg-design, cfg-library JSON. Then apply to the running app iframe.</p>
+      <p>Edit <code>data/*.json</code> files. Download the result and replace the file on disk.</p>
     </div>
-    <p id="ua" style="font-size:11px;opacity:0.7;"></p>
   </header>
   <main>
-    <section class="left">
-      <iframe id="app-frame" src="index.html"></iframe>
-    </section>
-    <section class="right">
-      <div class="section">
-        <h2>JSON source</h2>
-        <p>Select a block, edit JSON, then click “Apply & reload iframe”. Changes are not written to files; they only affect this session.</p>
+    <div class="notice">
+      ⚠ Requires a dev server — fetch() does not work on <code>file://</code>.
+      Run <code>npx serve .</code> or use VS Code Live Server.
+    </div>
+    <div class="editor">
+      <div class="tabs">
+        <button type="button" data-file="data/app.config.json" class="active">app.config</button>
+        <button type="button" data-file="data/design.config.json">design.config</button>
+        <button type="button" data-file="data/library.json">library</button>
       </div>
-      <div class="editor">
-        <div class="tabs">
-          <button type="button" data-target="cfg-app" class="active">cfg-app</button>
-          <button type="button" data-target="cfg-design">cfg-design</button>
-          <button type="button" data-target="cfg-library">cfg-library</button>
-        </div>
-        <textarea id="json-text"></textarea>
-        <div class="actions">
-          <span class="status" id="status">Waiting for iframe…</span>
-          <div>
-            <button type="button" id="reload-btn">Reload from iframe</button>
-            <button type="button" id="apply-btn" class="primary">Apply & reload iframe</button>
-          </div>
+      <textarea id="json-text" spellcheck="false"></textarea>
+      <div class="actions">
+        <span class="status" id="status">Select a file to load.</span>
+        <div style="display:flex;gap:6px;">
+          <button type="button" id="reload-btn">Reload from disk</button>
+          <button type="button" id="validate-btn">Validate JSON</button>
+          <button type="button" id="download-btn" class="primary">Download file</button>
         </div>
       </div>
-    </section>
+    </div>
   </main>
 
   <script>
-    const uaEl = document.getElementById('ua');
-    uaEl.textContent = navigator.userAgent;
+    const textarea    = document.getElementById('json-text');
+    const statusEl    = document.getElementById('status');
+    const reloadBtn   = document.getElementById('reload-btn');
+    const validateBtn = document.getElementById('validate-btn');
+    const downloadBtn = document.getElementById('download-btn');
+    const tabBtns     = Array.from(document.querySelectorAll('.tabs button'));
 
-    const iframe = document.getElementById('app-frame');
-    const textarea = document.getElementById('json-text');
-    const statusEl = document.getElementById('status');
-    const reloadBtn = document.getElementById('reload-btn');
-    const applyBtn = document.getElementById('apply-btn');
-    const tabButtons = Array.from(document.querySelectorAll('.tabs button'));
-
-    let currentId = 'cfg-app';
+    let currentFile = tabBtns[0].dataset.file;
 
     function setStatus(msg, ok = true) {
       statusEl.textContent = msg;
       statusEl.style.color = ok ? '#a5b4fc' : '#f97373';
     }
 
-    function getFrameDoc() {
-      return iframe.contentDocument || iframe.contentWindow.document;
-    }
-
-    function loadCurrentJson() {
+    async function loadFile(path) {
+      setStatus(`Loading ${path}…`);
       try {
-        const doc = getFrameDoc();
-        const el = doc.getElementById(currentId);
-        if (!el) {
-          setStatus(`No <script id="${currentId}"> in iframe`, false);
-          return;
-        }
-        const raw = el.textContent.trim();
-        // Pretty-print if possible
-        try {
-          const obj = JSON.parse(raw);
-          textarea.value = JSON.stringify(obj, null, 2);
-          setStatus(`Loaded ${currentId} from iframe`, true);
-        } catch (e) {
-          // Leave raw if it's not valid JSON for some reason
-          textarea.value = raw;
-          setStatus(`Loaded ${currentId}, but JSON.parse failed: ${e}`, false);
-        }
+        const r = await fetch(`./${path}?_=${Date.now()}`);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const obj = await r.json();
+        textarea.value = JSON.stringify(obj, null, 2);
+        setStatus(`Loaded ${path}`, true);
       } catch (e) {
-        setStatus('Error accessing iframe: ' + e, false);
+        textarea.value = '';
+        setStatus(`Error: ${e.message}`, false);
       }
     }
 
-    function applyCurrentJson() {
+    function validateJson() {
       try {
-        const text = textarea.value.trim();
-        if (!text) {
-          setStatus('Textarea is empty, nothing to apply.', false);
-          return;
-        }
-        // Validate JSON
-        let parsed;
-        try {
-          parsed = JSON.parse(text);
-        } catch (e) {
-          setStatus('JSON.parse error: ' + e.message, false);
-          return;
-        }
-        const doc = getFrameDoc();
-        const el = doc.getElementById(currentId);
-        if (!el) {
-          setStatus(`No <script id="${currentId}"> in iframe`, false);
-          return;
-        }
-        el.textContent = JSON.stringify(parsed, null, 2);
-        // Force reload so config.js re-parses the inline scripts from DOM
-        iframe.contentWindow.location.reload();
-        setStatus(`Applied new ${currentId} JSON; reloading iframe…`, true);
+        JSON.parse(textarea.value);
+        setStatus('JSON is valid ✓', true);
       } catch (e) {
-        setStatus('Error applying JSON: ' + e, false);
+        setStatus(`Invalid JSON: ${e.message}`, false);
       }
     }
 
-    tabButtons.forEach(btn => {
+    function downloadFile() {
+      try {
+        const parsed = JSON.parse(textarea.value);
+        const blob = new Blob(
+          [JSON.stringify(parsed, null, 2)],
+          { type: 'application/json' }
+        );
+        const filename = currentFile.split('/').pop();
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        setStatus(`Downloaded ${filename} — replace the file in data/ on disk`, true);
+      } catch (e) {
+        setStatus(`Invalid JSON — fix errors before downloading: ${e.message}`, false);
+      }
+    }
+
+    tabBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        tabButtons.forEach(b => b.classList.remove('active'));
+        tabBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        currentId = btn.getAttribute('data-target');
-        loadCurrentJson();
+        currentFile = btn.dataset.file;
+        loadFile(currentFile);
       });
     });
 
-    reloadBtn.addEventListener('click', loadCurrentJson);
-    applyBtn.addEventListener('click', applyCurrentJson);
+    reloadBtn.addEventListener('click', () => loadFile(currentFile));
+    validateBtn.addEventListener('click', validateJson);
+    downloadBtn.addEventListener('click', downloadFile);
 
-    iframe.addEventListener('load', () => {
-      setStatus('Iframe ready. Loaded cfg-app.', true);
-      loadCurrentJson();
-    });
+    // Load first tab on boot
+    loadFile(currentFile);
   </script>
 </body>
 </html>
