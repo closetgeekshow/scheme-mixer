@@ -519,6 +519,11 @@
     display: none;
   }
 
+  .mobile-overlay:not(.hidden) {
+    display: flex;
+  }
+
+
   .mobile-param-strip {
     flex: 1;
     display: flex;
