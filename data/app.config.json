@@ -1,0 +1,51 @@
+{
+  "title": "Scheme Remix Studio",
+  "subtitle": "Parametric component design system",
+  "demoActiveDuration": 1800,
+  "camera": {
+    "panClamp": [-1, 1],
+    "zoomClamp": [0.5, 3]
+  },
+  "capabilityLayerRegistry": [
+    {
+      "id": "fx-demo",
+      "layer": "effects.demo",
+      "alwaysOn": true,
+      "description": "Enables demo-active motion accents and lens hover transforms."
+    },
+    {
+      "id": "fx-holo-pan",
+      "layer": "effects.holo-pan",
+      "alwaysOn": true,
+      "description": "Animates holographic surfaces with a slow pan."
+    }
+  ],
+  "primitiveRegistry": [
+    {"name": "--_bg-950", "cssType": "color"},
+    {"name": "--_bg-900", "cssType": "color"},
+    {"name": "--_bg-800", "cssType": "color"},
+    {"name": "--_border-low", "cssType": "color"},
+    {"name": "--_border-mid", "cssType": "color"},
+    {"name": "--_text-hi", "cssType": "color"},
+    {"name": "--_text-mid", "cssType": "color"},
+    {"name": "--_text-lo", "cssType": "color"},
+    {"name": "--_accent", "cssType": "color"},
+    {"name": "--_green", "cssType": "color"},
+    {"name": "--r-xs", "cssType": "length"},
+    {"name": "--r-sm", "cssType": "length"},
+    {"name": "--r-md", "cssType": "length"},
+    {"name": "--r-lg", "cssType": "length"},
+    {"name": "--r-xl", "cssType": "length"},
+    {"name": "--r-2xl", "cssType": "length"},
+    {"name": "--sp-xs", "cssType": "length"},
+    {"name": "--sp-sm", "cssType": "length"},
+    {"name": "--sp-md", "cssType": "length"},
+    {"name": "--sp-lg", "cssType": "length"},
+    {"name": "--sp-xl", "cssType": "length"},
+    {"name": "--z-lens-overlay", "cssType": "number"},
+    {"name": "--z-maximized", "cssType": "number"},
+    {"name": "--z-mobile-bar", "cssType": "number"},
+    {"name": "--z-popover", "cssType": "number"},
+    {"name": "--sidebar-width", "cssType": "length"}
+  ]
+}
