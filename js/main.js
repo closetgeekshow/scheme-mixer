@@ -100,7 +100,7 @@ function wireGlobalButtons() {
     });
   }
 
-   if (mobileMax && mobileOverlay) {
+  if (mobileMax && mobileOverlay) {
      mobileMax.addEventListener("click", e => {
        e.stopPropagation();
        mobileOverlay.classList.remove("hidden");
