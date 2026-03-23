@@ -5,7 +5,8 @@ export const docsConfig = {
   name: 'Scheme Mixer',
   repo: 'https://github.com/closetgeekshow/scheme-mixer',
   loadSidebar: true,
-  subMaxLevel: 3,
+
+  subMaxLevel: 2,
   auto2top: true,
   search: 'auto',
   copyCode: {

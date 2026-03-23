@@ -1,0 +1,7 @@
+* [Adding a New Option](docs/extend/1-adding-a-new-option.md)
+* [Adding a Parameter Type](docs/extend/2-adding-a-parameter-type.md)
+* [Adding a New Lens](docs/extend/3-adding-a-new-lens.md)
+* [Capability Layers](docs/extend/4-capability-layers.md)
+* [Presets and Schemes](docs/extend/5-presets-and-schemes.md)
+* [Modifying Tokens](docs/extend/6-modifying-tokens.md)
+* [Modifying App Config](docs/extend/7-modifying-app-config.md)
