@@ -23,6 +23,7 @@ flowchart TD
     K --> M["activateAlwaysOnCapabilities()"]
     K --> N["applyDesign()"]
     K --> O["wireGlobalButtons()"]
+    K --> P["buildSchemeList()"]
 
     style A fill:#1e3a5f,color:#e8e8e8
     style K fill:#2a4a2a,color:#e8e8e8
@@ -30,7 +31,10 @@ flowchart TD
     style M fill:#3a2a4a,color:#e8e8e8
     style N fill:#3a2a4a,color:#e8e8e8
     style O fill:#3a2a4a,color:#e8e8e8
+    style P fill:#3a2a4a,color:#e8e8e8
 ```
+
+Source: `main.js` `init()` function (lines 136–142) and `readyState` guard (lines 144–148).
 
 ## 2 — Config Fetch (`config.js`)
 
@@ -46,11 +50,11 @@ flowchart TD
     D --> G{"r.ok?"}
     E --> H{"r.ok?"}
     F -->|"yes"| I["r.json → APP_CONFIG"]
-    F -->|"no"| J["throw Error — HTTP status"]
+    F -->|"no"| J["throw Error — Failed to load app.config.json: status"]
     G -->|"yes"| K["r.json → DESIGN_CONFIG"]
-    G -->|"no"| L["throw Error — HTTP status"]
+    G -->|"no"| L["throw Error — Failed to load design.config.json: status"]
     H -->|"yes"| M["r.json → LIBRARY"]
-    H -->|"no"| N["throw Error — HTTP status"]
+    H -->|"no"| N["throw Error — Failed to load library.json: status"]
     I & K & M --> O["export APP_CONFIG<br/>DESIGN_CONFIG<br/>LIBRARY"]
     O --> P(["Downstream importers auto-await<br/>state.js · ui.js · main.js"])
 
@@ -60,6 +64,8 @@ flowchart TD
     style O fill:#2a4a2a,color:#e8e8e8
     style P fill:#2a4a2a,color:#e8e8e8
 ```
+
+Source: `config.js` lines 6–19.
 
 ## 3 — State Derivation (`state.js`)
 
@@ -81,6 +87,8 @@ flowchart LR
     style C fill:#2a4a2a,color:#e8e8e8
     style E fill:#2a4a2a,color:#e8e8e8
 ```
+
+Source: `state.js` lines 8–52.
 
 ## 4 — `buildApp()` DOM Construction (`ui.js`)
 
@@ -114,6 +122,8 @@ flowchart TD
     style H fill:#3a2a4a,color:#e8e8e8
     style S fill:#3a2a4a,color:#e8e8e8
 ```
+
+Source: `ui.js` `buildApp()` (lines 119–146) and `createParamItem()` (lines 14–66).
 
 ## 5 — `createLens()` Factory (`lens.js`)
 
@@ -155,6 +165,8 @@ flowchart TD
     style S fill:#2a4a2a,color:#e8e8e8
 ```
 
+Source: `lens.js` `createLens()` (lines 177–321).
+
 ## 6 — `applyDesign()` (`state.js`)
 
 This diagram shows the full `applyDesign()` flow from font loading to class stamping. It runs on every parameter change and during `init()`.
@@ -182,6 +194,8 @@ flowchart TD
     style J fill:#2a4a2a,color:#e8e8e8
     style K fill:#2a4a2a,color:#e8e8e8
 ```
+
+Source: `state.js` `applyDesign()` (lines 67–88) and `ensureFontLoaded()` (lines 54–62).
 
 ## 7 — `updateCamera()` Math (`lens.js`)
 
@@ -213,7 +227,7 @@ ty = vH/2 − cam.y × cH × cam.zoom
 content.style.transform = translate(tx px, ty px) scale(cam.zoom)
 ```
 
-Source: `lens.js` `updateCamera()`.
+Source: `lens.js` `updateCamera()` (lines 51–86).
 
 ## 8 — Lens Pointer / Wheel / Touch Interactions
 
@@ -244,6 +258,8 @@ flowchart TD
     style Global fill:#1a1a2e
 ```
 
+Source: `lens.js` `setupLensInteraction()` (lines 90–160) and global handlers (lines 17–47).
+
 ## 9 — Param `<select>` Change Flow
 
 This diagram shows the full flow from a user changing a parameter select to the component updating. It runs on every parameter change.
@@ -263,6 +279,8 @@ flowchart TD
     style H fill:#2a4a2a,color:#e8e8e8
 ```
 
+Source: `ui.js` `createParamItem()` change listener (lines 43–53) and `state.js` `applyDesign()` (lines 67–88).
+
 ## 10 — `randomize()` (`main.js`)
 
 This diagram shows how `randomize()` picks a random option for each parameter and applies it. It runs when the user clicks the Randomize button.
@@ -280,6 +298,8 @@ flowchart TD
     style A fill:#1e3a5f,color:#e8e8e8
     style G fill:#2a4a2a,color:#e8e8e8
 ```
+
+Source: `main.js` `randomize()` (lines 10–25).
 
 ## 11 — `triggerDemo()` (`main.js`)
 
@@ -306,7 +326,7 @@ delay per component = idx × 100ms
 total animation end = demoActiveDuration + (componentCount − 1) × 100ms
 ```
 
-Source: `main.js` `triggerDemo()`.
+Source: `main.js` `triggerDemo()` (lines 27–38).
 
 ## 12 — `applyScheme()` (`main.js`)
 
@@ -337,6 +357,8 @@ flowchart TD
     style Q fill:#2a4a2a,color:#e8e8e8
 ```
 
+Source: `main.js` `applyScheme()` (lines 40–71).
+
 ## 13 — Maximize / Restore (`lens.js`)
 
 This diagram shows how `toggleMaximize()` expands a lens to full viewport or restores it. It runs when the user clicks the maximize button.
@@ -357,6 +379,8 @@ flowchart TD
     style H fill:#2a4a2a,color:#e8e8e8
     style I fill:#2a4a2a,color:#e8e8e8
 ```
+
+Source: `lens.js` `toggleMaximize()` (lines 164–173).
 
 ## 14 — Fit / 1× Toggle (fixed lens, `lens.js`)
 
@@ -379,6 +403,8 @@ flowchart TD
     style F fill:#2a4a2a,color:#e8e8e8
     style I fill:#2a4a2a,color:#e8e8e8
 ```
+
+Source: `lens.js` view toggle handler (lines 276–302).
 
 ## 15 — Popover Show / Hide (`ui.js`)
 
@@ -405,6 +431,8 @@ flowchart TD
     style M fill:#2a4a2a,color:#e8e8e8
 ```
 
+Source: `ui.js` `showPopover()` (lines 82–107) and window click handler (lines 110–115).
+
 ## 16 — Mobile Overlay Flow (`main.js`)
 
 This diagram shows how the mobile overlay is shown and hidden. It runs when the user interacts with mobile UI buttons.
@@ -422,6 +450,8 @@ flowchart LR
     style A fill:#1e3a5f,color:#e8e8e8
     style H fill:#2a4a2a,color:#e8e8e8
 ```
+
+Source: `main.js` `wireGlobalButtons()` (lines 84–115).
 
 ## 17 — CSS Token Resolution Cascade (`app.css`)
 
@@ -448,6 +478,8 @@ flowchart TD
     style M fill:#2a4a2a,color:#e8e8e8
 ```
 
+Source: `app.css` `@layer` declaration and token definitions.
+
 ## 18 — JS Module DAG
 
 This diagram shows the import relationships between all JS modules. The dashed arrow indicates a dynamic import used to break a circular dependency.
@@ -468,3 +500,5 @@ flowchart LR
     style D fill:#2a4a2a,color:#e8e8e8
     linkStyle 6 stroke:#f5a623,stroke-dasharray:5 5
 ```
+
+Source: all `import` statements across `js/*.js`.
