@@ -55,6 +55,35 @@ All schemas are JSON Schema Draft-07 and describe authored configuration entitie
 }
 ```
 
+**Live instance:** `data/app.config.json`
+- `title`: `"Scheme Remix Studio"`
+- `subtitle`: `"Parametric component design system"`
+- `demoActiveDuration`: `1800`
+- `camera.panClamp`: `[-1, 1]`
+- `camera.zoomClamp`: `[0.5, 3]`
+
+## PropSetProp
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://scheme-remix.studio/schema/PropSetProp.json",
+  "title": "PropSetProp",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "cssType", "initial"],
+  "properties": {
+    "name": { "type": "string", "pattern": "^--[a-z0-9-]+$" },
+    "cssType": { "type": "string" },
+    "initial": { "oneOf": [{ "type": "string" }, { "type": "number" }] },
+    "registerProperty": { "type": "boolean", "default": false }
+  }
+}
+```
+
+**Live instances:** `data/design.config.json` `propSets[*].props[*]`
+- Example: `{"name":"--comp-color","cssType":"color","initial":"000000","registerProperty":true}`
+
 ## PropSet
 
 ```json
@@ -77,24 +106,30 @@ All schemas are JSON Schema Draft-07 and describe authored configuration entitie
 }
 ```
 
-## PropSetProp
+**Live instances:** `data/design.config.json` `propSets[]`
+- 5 entries: `surfaceMaterial` (12 props), `shapeGeometry` (4 props), `depthElevation` (4 props), `motionDynamics` (1 prop), `spatialDensity` (5 props)
+
+## ParamTypeOption
 
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://scheme-remix.studio/schema/PropSetProp.json",
-  "title": "PropSetProp",
+  "$id": "https://scheme-remix.studio/schema/ParamTypeOption.json",
+  "title": "ParamTypeOption",
   "type": "object",
   "additionalProperties": false,
-  "required": ["name", "cssType", "initial"],
+  "required": ["value", "label"],
   "properties": {
-    "name": { "type": "string", "pattern": "^--[a-z0-9-]+$" },
-    "cssType": { "type": "string" },
-    "initial": { "oneOf": [{ "type": "string" }, { "type": "number" }] },
-    "registerProperty": { "type": "boolean", "default": false }
+    "value": { "type": "string" },
+    "label": { "type": "string" },
+    "group": { "type": "string" },
+    "fontsource": { "type": "string", "format": "uri" }
   }
 }
 ```
+
+**Live instances:** `data/design.config.json` `paramTypes[*].options[*]`
+- Example: `{"value":"velvet","label":"Velvet — Matte Solid","fontsource":"https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"}`
 
 ## ParamType
 
@@ -117,24 +152,8 @@ All schemas are JSON Schema Draft-07 and describe authored configuration entitie
 }
 ```
 
-## ParamTypeOption
-
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://scheme-remix.studio/schema/ParamTypeOption.json",
-  "title": "ParamTypeOption",
-  "type": "object",
-  "additionalProperties": false,
-  "required": ["value", "label"],
-  "properties": {
-    "value": { "type": "string" },
-    "label": { "type": "string" },
-    "group": { "type": "string" },
-    "fontsource": { "type": "string", "format": "uri" }
-  }
-}
-```
+**Live instances:** `data/design.config.json` `paramTypes[]`
+- 5 entries: `surface`, `shape`, `depth`, `motion`, `density`
 
 ## Lens
 
@@ -156,6 +175,9 @@ All schemas are JSON Schema Draft-07 and describe authored configuration entitie
   }
 }
 ```
+
+**Live instances:** `data/design.config.json` `lenses[]`
+- `[{"id":"actual","zoom":1,"fixed":true}, {"id":"geometry","zoom":2}, {"id":"surface","zoom":0.75}]`
 
 ## Preset
 
@@ -179,6 +201,8 @@ All schemas are JSON Schema Draft-07 and describe authored configuration entitie
 }
 ```
 
+**Live file:** `data/library.json` — `presets:[]` (empty at v0.2)
+
 ## Scheme
 
 ```json
@@ -198,3 +222,24 @@ All schemas are JSON Schema Draft-07 and describe authored configuration entitie
   }
 }
 ```
+
+**Live file:** `data/library.json` — `schemes:[]` (empty at v0.2)
+
+## Library
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://scheme-remix.studio/schema/Library.json",
+  "title": "Library",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["presets", "schemes"],
+  "properties": {
+    "presets": { "type": "array", "items": { "$ref": "Preset.json" } },
+    "schemes": { "type": "array", "items": { "$ref": "Scheme.json" } }
+  }
+}
+```
+
+**Live file:** `data/library.json` — `{"presets":[],"schemes":[]}` (empty at v0.2)

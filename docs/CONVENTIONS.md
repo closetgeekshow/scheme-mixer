@@ -2,71 +2,106 @@
 
 Canonical naming and structural conventions for Scheme Remix Studio. All code, config, and documentation MUST adhere to these invariants.
 
-## CSS Custom Properties
+## 1.1 CSS Custom Property Naming
 
-- All CSS custom properties use kebab-case, start with `--`, and never contain uppercase letters.
-- Tier 1 (primitive) tokens use the `--_` prefix and are treated as read-only palette and scale values:
-  - Colors: `--_bg-950`, `--_bg-900`, `--_bg-800`, `--_border-low`, `--_border-mid`, `--_text-hi`, `--_text-mid`, `--_text-lo`, `--_accent`, `--_green`.
-  - Radius scale: `--r-xs`, `--r-sm`, `--r-md`, `--r-lg`, `--r-xl`, `--r-2xl`.
-  - Spacing scale: `--sp-xs`, `--sp-sm`, `--sp-md`, `--sp-lg`, `--sp-xl`.
-  - Z-index scale: `--z-lens-overlay`, `--z-maximized`, `--z-mobile-bar`, `--z-popover`.
-  - Layout primitives: `--sidebar-width`.
-- Tier 2 (semantic) tokens have no `--_` prefix and express intent while remaining global:
-  - Colors and panels: `--bg`, `--panel`, `--panel-2`, `--border`, `--border-2`, `--text`, `--text-dim`, `--text-muted`, `--accent`, `--green`.
-  - Derived alpha tokens: `--accent-bg`, `--green-bg`, `--green-bdr`.
-  - Font stacks: `--mono`, `--sans`.
-- Tier 3 (component defaults) are all `--comp-*` and `--btn-*` tokens, plus optional component-local noise tokens.
-- Fallbacks for component tokens MUST be defined only in `tokens.component-defaults`, never inline inside component rules.
-- Option-local aliases MUST follow `--_[cssPrefix]-[value]--[name]`.
+Three tiers of CSS custom properties, each with a distinct prefix and purpose.
+
+| Tier | Prefix | Example | Where defined |
+|---|---|---|---|
+| 1 — Primitives | `--_` | `--_bg-950`, `--_accent`, `--r-xs` | `@layer tokens.primitives` in `app.css` |
+| 2 — Semantic | none | `--bg`, `--panel`, `--accent` | `@layer tokens.semantic` in `app.css` |
+| 3 — Component Defaults | `--comp-*` / `--btn-*` | `--comp-bg`, `--btn-bg` | `@layer tokens.component-defaults` in `app.css` |
+
+**Rules:**
+- Tier 1 primitives MUST use the `--_` prefix and are read-only at runtime.
+- Tier 2 semantic tokens MUST have no prefix and express intent while referencing Tier 1 values.
+- Tier 3 component tokens MUST use `--comp-*` or `--btn-*` prefixes.
+- Fallbacks for component tokens MUST be defined only in `tokens.component-defaults`, never inline inside option classes.
 - Any newly introduced Tier 1 primitive MUST also be registered in `app.config.json.primitiveRegistry`.
 
-## CSS Class Names
+Source: `app.css` `@layer tokens.primitives`, `@layer tokens.semantic`, `@layer tokens.component-defaults`; `data/app.config.json` `primitiveRegistry`.
 
-- ParamType option classes always follow `[cssPrefix]-[optionValue]`.
-- Examples:
-  - Surface: `.surf-velvet`, `.surf-console`, `.surf-glass`, `.surf-frutiger`, `.surf-memphis`, `.surf-artdeco`, `.surf-grunge`, `.surf-holo`.
-  - Shape: `.shape-pill`, `.shape-sharp`, `.shape-soft`, `.shape-chamfer`, `.shape-bauhaus`, `.shape-concentric`, `.shape-squircle`.
-  - Depth: `.depth-flat`, `.depth-raised`, `.depth-sunken`, `.depth-neumorphic`, `.depth-brutalist`, `.depth-glowing`, `.depth-concentric`.
-  - Motion: `.mo-velvet`, `.mo-console`, `.mo-elastic`, `.mo-glitch`, `.mo-float`, `.mo-whip`, `.mo-spring`.
-  - Density: `.density-compact`, `.density-normal`, `.density-airy`, `.density-wide`.
-- The core component root element always has class `.the-component`, with exactly one instance of each paramType option class applied via JS.
-- Component sub-elements use the `comp-` prefix: `.comp-actions`, `.comp-btn`, `.comp-btn.secondary`.
-- Lens shells and overlays use the `lens-` prefix: `.lens`, `.lens-fixed`, `.lens--maximized`, `.lens-viewport`, `.lens-content`, `.lens-badge`, `.lens-reset-btn`, `.lens-max-btn`, `.lens-view-toggle`.
-- Sidebar and mobile UI use descriptive prefixes such as `.sidebar`, `.param-*`, `.mobile-*`, and `.popover`.
-- Capability layers are activated via `:root` classes: `:root.fx-holo-pan`, `:root.fx-demo`, `:root.fx-glitch`.
-- There MUST be no remaining `.geo-*` classes in the final stylesheet.
+## 1.2 PropSet and ParamType IDs
 
-## JavaScript Identifiers
+All `propSet` and `paramType` IDs MUST use lowerCamelCase.
 
-- All JS files are ES modules with strict mode implied.
-- `config.js` exports `APP_CONFIG`, `DESIGN_CONFIG`, `LIBRARY`.
-- `state.js` exports `state`, `cameras`, `componentEls`, `paramSelectMap`, `lensCache`, `compClasses`, `ensureFontLoaded`, `applyDesign`.
-- `lens.js` exports `createLens`, `updateCamera`.
-- `ui.js` exports `createParamItem`, `buildParamList`, `buildApp`, `showPopover`.
-- `main.js` exports `randomize`, `triggerDemo`, `applyScheme` and runs init.
-- Local variables and functions use lowerCamelCase and descriptive names.
+**Live propSet IDs** (source: `data/design.config.json` `propSets[*].id`):
+- `surfaceMaterial`
+- `shapeGeometry`
+- `depthElevation`
+- `motionDynamics`
+- `spatialDensity`
 
-## JSON Keys
+**Live paramType IDs** (source: `data/design.config.json` `paramTypes[*].id`):
+- `surface`
+- `shape`
+- `depth`
+- `motion`
+- `density`
 
-- All JSON keys use lowerCamelCase.
-- Root config split:
-  - `data/app.config.json` contains AppConfig.
-  - `data/design.config.json` contains `propSets`, `paramTypes`, `lenses` and MUST NOT contain `presets` or `schemes`.
-  - `data/library.json` contains `presets`, `schemes` and MUST NOT contain `propSets` or `paramTypes`.
+## 1.3 CSS Option Class Pattern
 
-## File and Directory Names
+All paramType option classes MUST follow the pattern `[cssPrefix]-[optionValue]`.
 
-- Top-level: `index.html`, `app.css`.
-- JavaScript modules: `js/config.js`, `js/state.js`, `js/lens.js`, `js/ui.js`, `js/main.js`.
-- Data files: `data/app.config.json`, `data/design.config.json`, `data/library.json`.
-- Documentation files live in `docs/` and use the prescribed uppercase names.
+**Live cssPrefix values** (source: `data/design.config.json` `paramTypes[*].cssPrefix`):
 
-## Cross-File Contracts
+| cssPrefix | paramType | Example class |
+|---|---|---|
+| `surf` | surface | `.surf-velvet` |
+| `shape` | shape | `.shape-pill` |
+| `depth` | depth | `.depth-raised` |
+| `mo` | motion | `.mo-elastic` |
+| `density` | density | `.density-normal` |
 
-- Every `ParamType.cssPrefix` MUST match the class name prefix used in CSS.
-- Every CSS property set inside a paramType option class MUST belong to one of that paramType's `propSetIds`.
-- `compClasses()` MUST always generate `the-component` plus one class per paramType.
-- Template IDs in `index.html` MUST match the IDs used by `document.getElementById()` in `lens.js` and `ui.js`.
-- `config.js` MUST fetch `data/app.config.json`, `data/design.config.json`, and `data/library.json`
-  and export `APP_CONFIG`, `DESIGN_CONFIG`, and `LIBRARY`. A dev server is required;
-  `fetch()` does not work on `file://`.
+## 1.4 `@layer` Naming
+
+All CSS layers MUST use the `group.sublayer` format. The full 18-layer sequence (source: `app.css` `@layer` declaration):
+
+```
+reset,
+tokens.primitives,
+tokens.semantic,
+tokens.component-defaults,
+shell.layout,
+shell.sidebar,
+shell.lens,
+shell.mobile,
+component.base,
+component.surface,
+component.shape,
+component.depth,
+component.motion,
+component.density,
+effects.holo-pan,
+effects.glitch,
+effects.demo,
+overrides
+```
+
+## 1.5 Capability Layer Class IDs
+
+Capability layers are activated via `:root.fx-[name]` classes.
+
+**Live IDs** (source: `data/app.config.json` `capabilityLayerRegistry`):
+- `fx-demo`
+- `fx-holo-pan`
+
+Activation site: `document.documentElement.classList.add(id)` in `main.js` `activateAlwaysOnCapabilities()`.
+
+## 1.6 Fallback Token Placement
+
+All `--comp-*` and `--btn-*` fallbacks MUST be defined only in `@layer tokens.component-defaults`, never inline inside option classes.
+
+Source: `app.css` `@layer tokens.component-defaults` `:root` block; `docs/extend/2-adding-a-parameter-type.md` step 4.
+
+## 1.7 Capability Layer Scoping
+
+All rules inside an `effects.*` layer MUST be scoped under `:root.fx-[name]` so the effect is completely inert until activated.
+
+Source: `app.css` `@layer effects.demo` and `@layer effects.holo-pan` patterns; `docs/extend/4-capability-layers.md` step 1.
+
+## 1.8 Single PropSet Ownership
+
+Each CSS custom property MUST appear in exactly one `propSet`.
+
+Source: `docs/PROP-SETS.md` opening line.

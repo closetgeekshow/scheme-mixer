@@ -1,20 +1,17 @@
 # HOWTO: Add a New Capability Layer Effect
 
-Capability layers are opt-in CSS features activated by adding a class to `:root`.
-They live in their own named `@layer` blocks and are registered in `app.config.json`.
-Examples: `fx-holo-pan` (animates holographic backgrounds), `fx-demo` (motion previews).
+Capability layers are opt-in CSS features activated by adding a class to `:root`. They live in their own named `@layer` blocks and are registered in `app.config.json`. Examples: `fx-holo-pan` (animates holographic backgrounds), `fx-demo` (motion previews).
 
 ## Overview
 
 A capability layer consists of three parts:
- * A named `@layer` block in `app.css` with scoped CSS rules
- * A `:root.fx-[name]` class that gates the styles
- * A registry entry in `app.config.json` → `capabilityLayerRegistry`
+- A named `@layer` block in `app.css` with scoped CSS rules
+- A `:root.fx-[name]` class that gates the styles
+- A registry entry in `app.config.json` → `capabilityLayerRegistry`
 
-JavaScript activates registered layers automatically at init (if `alwaysOn: true`)
-or on demand via `applyScheme()` (if `alwaysOn: false`).
+JavaScript activates registered layers automatically at init (if `alwaysOn: true`) or on demand via `applyScheme()` (if `alwaysOn: false`).
 
-## Step 1 — Add the @layer block to app.css
+## Step 1 — Add the `@layer` block to `app.css`
 
 Register your new layer name in the `@layer` declaration at the top of `app.css`:
 
@@ -61,7 +58,7 @@ Then add the layer block with scoped CSS using `:root.fx-scanlines` as the gate:
 > Rule: All rules MUST be scoped under `:root.fx-[name]` so the effect
 > is completely inert until its class is present on `<html>`.
 
-## Step 2 — Register in app.config.json
+## Step 2 — Register in `app.config.json`
 
 Open `data/app.config.json`. Add an entry to `capabilityLayerRegistry`:
 
@@ -83,10 +80,9 @@ Open `data/app.config.json`. Add an entry to `capabilityLayerRegistry`:
 | `alwaysOn` | boolean | `true` = activated on init; `false` = activated only by a Scheme |
 | `description` | string | Human-readable description shown in config tooling |
 
-## Step 3 — Activate via a Scheme (for alwaysOn: false effects)
+## Step 3 — Activate via a Scheme (for `alwaysOn: false` effects)
 
-Non-always-on effects are activated by Schemes. Open `data/library.json`
-and add or update a Scheme entry with your new capability layer:
+Non-always-on effects are activated by Schemes. Open `data/library.json` and add or update a Scheme entry with your new capability layer:
 
 ```json
 {
@@ -99,9 +95,9 @@ and add or update a Scheme entry with your new capability layer:
 ```
 
 When `applyScheme('retro-terminal')` is called from `main.js`, it will:
- * Apply all presets in `presetIds`
- * Remove all non-`alwaysOn` capability layer classes from `:root`
- * Add each id in `capabilityLayers` to `:root`
+- Apply all presets in `presetIds`
+- Remove all non-`alwaysOn` capability layer classes from `:root`
+- Add each id in `capabilityLayers` to `:root`
 
 ## Step 4 — Manual activation (for testing)
 
@@ -113,10 +109,9 @@ document.documentElement.classList.add('fx-scanlines');
 document.documentElement.classList.remove('fx-scanlines');
 ```
 
-## Step 5 — Update test.html
+## Step 5 — Update `test.html`
 
-Check 6.13 in `test.html` verifies that specific `:root` classes are present.
-If your new layer is `alwaysOn: true`, add it to the check:
+Check 6.13 in `test.html` verifies that specific `:root` classes are present. If your new layer is `alwaysOn: true`, add it to the check:
 
 ```javascript
 // 6.13 Capability layers
@@ -128,9 +123,9 @@ const status   = hasDemo && hasHolo && hasScan ? 'PASS' : 'FAIL';
 
 ## Checklist
 
- * [ ] New `@layer` name added to the `@layer` declaration in `app.css`
- * [ ] `@layer effects.[name]` block added with all rules scoped under `:root.fx-[name]`
- * [ ] Entry added to `app.config.json` → `capabilityLayerRegistry`
- * [ ] If `alwaysOn: false`, a Scheme in `library.json` references the layer id
- * [ ] Browser console test confirms the effect activates and deactivates correctly
- * [ ] `test.html` check 6.13 updated if `alwaysOn: true`
+- [ ] New `@layer` name added to the `@layer` declaration in `app.css`
+- [ ] `@layer effects.[name]` block added with all rules scoped under `:root.fx-[name]`
+- [ ] Entry added to `app.config.json` → `capabilityLayerRegistry`
+- [ ] If `alwaysOn: false`, a Scheme in `library.json` references the layer id
+- [ ] Browser console test confirms the effect activates and deactivates correctly
+- [ ] `test.html` check 6.13 updated if `alwaysOn: true`

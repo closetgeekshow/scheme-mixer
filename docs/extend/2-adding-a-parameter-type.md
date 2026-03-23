@@ -1,34 +1,29 @@
 # HOWTO: Add a New Parameter Type (Design Axis)
 
-This guide walks through adding a completely new design axis — a new dropdown in the
-sidebar with its own set of CSS tokens that control a new visual dimension.
+This guide walks through adding a completely new design axis — a new dropdown in the sidebar with its own set of CSS tokens that control a new visual dimension.
 
 ## Overview
 
-A "parameter type" (`paramType`) is one independently-controllable design axis,
-such as `Surface Material`, `Shape Geometry`, or `Spatial Density`. Each `paramType` maps
-to one CSS class applied to `.the-component` and a set of CSS custom properties
-(a `propSet`) those classes override.
+A "parameter type" (`paramType`) is one independently-controllable design axis, such as `Surface Material`, `Shape Geometry`, or `Spatial Density`. Each `paramType` maps to one CSS class applied to `.the-component` and a set of CSS custom properties (a `propSet`) those classes override.
 
 Adding a new `paramType` touches three files:
- * `data/design.config.json` — declare the `propSet` and `paramType`
- * `app.css` — add `tokens.component-defaults` entries + a new `@layer` block
- * `docs/COMPONENT-CONTRACT.md` — update the contract (documentation)
+- `data/design.config.json` — declare the `propSet` and `paramType`
+- `app.css` — add `tokens.component-defaults` entries + a new `@layer` block
+- `docs/COMPONENT-CONTRACT.md` — update the contract (documentation)
 
 No changes to any JavaScript file are required.
 
 ## Step 1 — Design your new tokens
 
-Decide what CSS custom properties your new axis will control.
-Token names MUST follow the `--comp-*` or `--btn-*` naming convention.
+Decide what CSS custom properties your new axis will control. Token names MUST follow the `--comp-*` or `--btn-*` naming convention.
 
 Example axis: "Border Style" — controls decorative border patterns.
 
 New tokens:
- * `--comp-border-style` — CSS border-style value (e.g., solid, dashed, double)
- * `--comp-border-width` — CSS border-width value (e.g., 1px, 3px)
+- `--comp-border-style` — CSS border-style value (e.g., solid, dashed, double)
+- `--comp-border-width` — CSS border-width value (e.g., 1px, 3px)
 
-## Step 2 — Add a propSet to design.config.json
+## Step 2 — Add a `propSet` to `design.config.json`
 
 Open `data/design.config.json`. Add a new object to the top-level `propSets` array.
 
@@ -53,12 +48,11 @@ Open `data/design.config.json`. Add a new object to the top-level `propSets` arr
 }
 ```
 
- * `id` — lowerCamelCase unique identifier for the `propSet`.
- * `initial` — the default value, declared in `tokens.component-defaults` (Step 4).
- * `registerProperty: true` — use for interpolatable types (length, number, color)
-   to enable CSS `@property` registration and smooth transitions.
+- `id` — lowerCamelCase unique identifier for the `propSet`.
+- `initial` — the default value, declared in `tokens.component-defaults` (Step 4).
+- `registerProperty: true` — use for interpolatable types (length, number, color) to enable CSS `@property` registration and smooth transitions.
 
-## Step 3 — Add the paramType to design.config.json
+## Step 3 — Add the `paramType` to `design.config.json`
 
 In the same file, add a new object to the `paramTypes` array:
 
@@ -79,15 +73,14 @@ In the same file, add a new object to the `paramTypes` array:
 }
 ```
 
- * `id` — must be unique across all `paramTypes`; used as the state key.
- * `cssPrefix` — the prefix for all CSS option classes (`bdr-none`, `bdr-solid`, etc.).
- * `propSetIds` — references one or more `propSet` id values from Step 2.
- * `options[].value` — combined with `cssPrefix` to form the class name.
+- `id` — must be unique across all `paramTypes`; used as the state key.
+- `cssPrefix` — the prefix for all CSS option classes (`bdr-none`, `bdr-solid`, etc.).
+- `propSetIds` — references one or more `propSet` id values from Step 2.
+- `options[].value` — combined with `cssPrefix` to form the class name.
 
-## Step 4 — Add default token values to app.css
+## Step 4 — Add defaults to `tokens.component-defaults` in `app.css`
 
-Open `app.css`. Find `@layer tokens.component-defaults`. Add your new tokens'
-default values inside the `:root` block:
+Open `app.css`. Find `@layer tokens.component-defaults`. Add your new tokens' default values inside the `:root` block:
 
 ```css
 @layer tokens.component-defaults {
@@ -104,10 +97,9 @@ default values inside the `:root` block:
 > Rule: Fallback values for component tokens MUST be defined only here,
 > never inline inside component or option rules.
 
-## Step 5 — Consume the tokens in component.base
+## Step 5 — Consume tokens in `@layer component.base`
 
-Open `app.css` and find `@layer component.base`. Add your new tokens to `.the-component`
-and/or `.comp-btn` so they are actually applied:
+Open `app.css` and find `@layer component.base`. Add your new tokens to `.the-component` and/or `.comp-btn` so they are actually applied:
 
 ```css
 @layer component.base {
@@ -121,10 +113,9 @@ and/or `.comp-btn` so they are actually applied:
 
 Update `docs/COMPONENT-CONTRACT.md` to document this new consumption.
 
-## Step 6 — Add the CSS option classes
+## Step 6 — Add the `@layer component.[name]` block
 
-Declare a new `@layer` block in `app.css`. It MUST be placed AFTER
-`component.density` and BEFORE `effects.holo-pan` in the layer stack.
+Declare a new `@layer` block in `app.css`. It MUST be placed AFTER `component.density` and BEFORE `effects.holo-pan` in the layer stack.
 
 Register it in the `@layer` declaration at the top of the file first:
 
@@ -186,22 +177,34 @@ Then add the layer block:
 }
 ```
 
-## Step 7 — Verify the class builder contract
+## Step 7 — Verify `compClasses()`
 
-`compClasses()` in `state.js` auto-generates one class per `paramType` by iterating
-`DESIGN_CONFIG.paramTypes`. No JS changes are needed. After adding the new `paramType`,
-`.the-component` will have one additional class: `bdr-[selectedValue]`.
+`compClasses()` in `state.js` auto-generates one class per `paramType` by iterating `DESIGN_CONFIG.paramTypes`. No JS changes are needed. After adding the new `paramType`, `.the-component` will have one additional class: `bdr-[selectedValue]`.
 
-Run `test.html` and verify check 6.5 ("Class builder") passes — the expected count
-will now be 7 (one per `paramType` + `the-component`). Update the test if needed.
+Run `test.html` and verify check 6.5 ("Class builder") passes — the expected count will now be 7 (one per `paramType` + `the-component`). Update the test if needed.
+
+## Flow Diagram
+
+```mermaid
+flowchart TD
+    A["Step 1: Design tokens<br/>--comp-border-style<br/>--comp-border-width"] --> B["Step 2: Add propSet<br/>design.config.json<br/>propSets[]"]
+    B --> C["Step 3: Add paramType<br/>design.config.json<br/>paramTypes[]"]
+    C --> D["Step 4: Add defaults<br/>app.css<br/>tokens.component-defaults"]
+    D --> E["Step 5: Consume tokens<br/>app.css<br/>component.base"]
+    E --> F["Step 6: Add @layer<br/>app.css<br/>component.border"]
+    F --> G["Step 7: Verify<br/>compClasses()<br/>test.html check 6.5"]
+
+    style A fill:#1e3a5f,color:#e8e8e8
+    style G fill:#2a4a2a,color:#e8e8e8
+```
 
 ## Checklist
 
- * [ ] `propSet` added to `design.config.json` with correct id, label, and props
- * [ ] `paramType` added to `design.config.json` with id, `cssPrefix`, `propSetIds`, and options
- * [ ] Default token values added to `tokens.component-defaults` in `app.css`
- * [ ] Tokens consumed in `@layer component.base` on `.the-component` and/or `.comp-btn`
- * [ ] New `@layer component.[name]` block added and registered in the `@layer` declaration
- * [ ] One CSS class per option value following `[cssPrefix]-[value]`
- * [ ] `docs/COMPONENT-CONTRACT.md` updated
- * [ ] `test.html` check 6.5 class count updated
+- [ ] `propSet` added to `design.config.json` with correct id, label, and props
+- [ ] `paramType` added to `design.config.json` with id, `cssPrefix`, `propSetIds`, and options
+- [ ] Default token values added to `tokens.component-defaults` in `app.css`
+- [ ] Tokens consumed in `@layer component.base` on `.the-component` and/or `.comp-btn`
+- [ ] New `@layer component.[name]` block added and registered in the `@layer` declaration
+- [ ] One CSS class per option value following `[cssPrefix]-[value]`
+- [ ] `docs/COMPONENT-CONTRACT.md` updated
+- [ ] `test.html` check 6.5 class count updated

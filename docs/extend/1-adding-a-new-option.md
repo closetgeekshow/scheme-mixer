@@ -1,27 +1,22 @@
 # HOWTO: Add a New Option to an Existing Parameter Type
 
-This guide explains how to extend an existing `paramType` (e.g., `Surface`, `Shape`, `Depth`,
-`Motion`, or `Density`) with a brand-new option — without touching any JavaScript.
-
-***
+This guide explains how to extend an existing `paramType` (e.g., `Surface`, `Shape`, `Depth`, `Motion`, or `Density`) with a brand-new option — without touching any JavaScript.
 
 ## Overview
 
-All `paramType` options are data-driven. Adding a new option requires:
-1. A CSS class in `app.css` that sets the correct `--comp-*` / `--btn-*` tokens.
-2. A new entry in `design.config.json` under the appropriate `paramType.options` array.
+All `paramType` options are data-driven. Adding a new option requires changes to exactly two files:
+1. `app.css` — add a CSS class that sets the correct `--comp-*` / `--btn-*` tokens
+2. `data/design.config.json` — add a new entry in the appropriate `paramType.options` array
 
 No JavaScript changes are ever needed to add a new option to an existing `paramType`.
 
-***
-
 ## Step 1 — Write the CSS class
 
-Open `app.css`. Find the `@layer component.[axis]` block that matches the `paramType`
-you are extending. Add your new class inside that block.
+Open `app.css`. Find the `@layer component.[axis]` block that matches the `paramType` you are extending. Add your new class inside that block.
 
 The class name MUST follow the pattern `[cssPrefix]-[optionValue]`.
 The CSS properties you set MUST only use tokens belonging to that `paramType`'s `propSetIds`.
+The class MUST be placed inside the matching `@layer component.[axis]` block.
 
 ### Example: Adding a new Surface called "neon"
 
@@ -87,11 +82,12 @@ The CSS properties you set MUST only use tokens belonging to that `paramType`'s 
 }
 ```
 
-## Step 2 — Register the option in design.config.json
+## Step 2 — Register in `design.config.json`
 
-Open `data/design.config.json`. Find the `paramTypes` array and locate the `paramType` object whose id matches the axis you extended.
+Open `data/design.config.json`. Find the `paramTypes` array and locate the `paramType` object whose `id` matches the axis you extended.
 
 Add a new object to the `options` array:
+
 ```json
 { "value": "neon", "label": "Neon — Hot Pink Terminal" }
 ```
@@ -106,10 +102,9 @@ For `Surface` options that require a custom font, add a `fontsource` field:
 }
 ```
 
-The `fontsource` URL is lazy-loaded via `ensureFontLoaded()` in `state.js`
-when that surface is first selected. It is only applicable to the `surface` `paramType`.
+The `fontsource` URL is lazy-loaded via `ensureFontLoaded()` in `state.js` when that surface is first selected. It is only applicable to the `surface` `paramType`.
 
-## Step 3 — (Demo only) Add a demo transform
+## Step 3 — (Optional) Motion demo transform
 
 If you want the Run Demo button to animate your new `Motion` option, add a rule inside `@layer effects.demo`:
 
@@ -129,9 +124,9 @@ The `.demo-active` class is added/removed by `triggerDemo()` in `main.js`.
 
 ## Checklist
 
- * [ ] CSS class added inside the correct `@layer component.[axis]` block
- * [ ] Class name follows `[cssPrefix]-[optionValue]`
- * [ ] Only props from the `paramType`'s `propSetIds` are set
- * [ ] `design.config.json` option entry added with value and label
- * [ ] `fontsource` added if a new web font is required (`Surface` only)
- * [ ] Demo transform added if extending the `Motion` `paramType`
+- [ ] CSS class added inside the correct `@layer component.[axis]` block
+- [ ] Class name follows `[cssPrefix]-[optionValue]`
+- [ ] Only props from the `paramType`'s `propSetIds` are set
+- [ ] `design.config.json` option entry added with value and label
+- [ ] `fontsource` added if a new web font is required (`Surface` only)
+- [ ] Demo transform added if extending the `Motion` `paramType`

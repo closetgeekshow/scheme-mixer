@@ -1,10 +1,15 @@
 # Scheme Remix Studio
 
-A parametric component design system built with vanilla JavaScript. Mix five independent design axes — surface material, shape geometry, depth elevation, motion dynamics, and spatial density — and preview every combination across three simultaneous zoom lenses in real time.
+A zero-build, data-driven parametric component explorer built with vanilla ES modules and a strict CSS `@layer` architecture.
 
 > **No build step. No framework. No bundler.** Requires only a local dev server.
 
----
+## What It Is
+
+- **Zero-build, vanilla ES modules** — serve with any static server, no bundler required
+- **5 parametric design axes** — surface material (8 options), shape geometry (7 options), depth elevation (7 options), motion dynamics (7 options), spatial density (4 options)
+- **3-lens viewport** — pan, zoom, maximize, and 1:1 pixel verification
+- **Data-driven** — add options, lenses, presets, and schemes without touching any JavaScript
 
 ## Quick Start
 
@@ -23,13 +28,17 @@ Install the "Live Server" extension, then click "Go Live"
 
 Then open `http://localhost:3000` (or whichever port your server reports) in your browser.
 
----
+## How It Works
 
-## What It Does
+Selecting a parameter value adds a single CSS class to `.the-component`. The full class string always looks like:
 
-Use the sidebar selects to dial in a combination of the five design parameters. The component preview updates instantly across all three lenses. Hit **Randomize** to jump to a random combination, or **Run Demo** to trigger a live motion preview on the component.
+```
+the-component  surf-velvet  shape-pill  depth-raised  mo-elastic  density-normal
+```
 
-### Design Parameters
+`compClasses()` in `state.js` builds this class string by iterating `DESIGN_CONFIG.paramTypes` and concatenating `cssPrefix + '-' + state[id]` for each axis. `applyDesign()` stamps the result onto every `.the-component` instance across all three lenses simultaneously.
+
+## Design Parameters
 
 | Axis | CSS Prefix | Options |
 |---|---|---|
@@ -39,9 +48,9 @@ Use the sidebar selects to dial in a combination of the five design parameters. 
 | Motion Dynamics | `mo-` | velvet, console, elastic, glitch, float, whip, spring |
 | Spatial Density | `density-` | compact, normal, airy, wide |
 
-### Lens System
+## Lens System
 
-Three viewports render the same component simultaneously at different zoom levels. The top lens is fixed (1× actual size) and supports a **1px toggle** to verify pixel-perfect rendering. The two bottom lenses are pannable and zoomable:
+Three viewports render the same component simultaneously at different zoom levels:
 
 | Lens | Zoom | Type | Controls |
 |---|---|---|---|
@@ -51,43 +60,9 @@ Three viewports render the same component simultaneously at different zoom level
 
 All three lenses have a **maximize button** (⛶) that expands them to full viewport.
 
----
-
-## Project Structure
-
-```
-closetgeekshow-scheme-mixer/
-├── index.html               # App shell, <template> declarations, module entry
-├── app.css                  # Full 18-layer CSS architecture
-│
-├── js/
-│   ├── config.js            # Parallel-fetches all three data files; top-level await
-│   ├── state.js             # Derived state, caches, compClasses, applyDesign
-│   ├── lens.js              # Lens construction, camera math, pointer tracker
-│   ├── ui.js                # Parameter UI, buildParamList, popover
-│   └── main.js              # Orchestration: init, randomize, triggerDemo, applyScheme
-│
-├── data/
-│   ├── app.config.json      # App behaviour, camera clamps, capability layer registry
-│   ├── design.config.json   # propSets, paramTypes, lenses — the design system schema
-│   └── library.json         # Presets and schemes (currently empty, ready to author)
-│
-└── docs/
-    ├── ARCHITECTURE.md
-    ├── COMPONENT-CONTRACT.md
-    ├── CONVENTIONS.md
-    ├── DIAGRAMS.md
-    ├── LAYER-STACK.md
-    ├── PROP-SETS.md
-    ├── SCHEMAS.md
-    └── TOKEN-MAP.md
-```
-
----
-
 ## CSS Architecture
 
-`app.css` uses a strict 18-layer `@layer` cascade, declared in this order:
+`app.css` uses a strict 18-layer `@layer` cascade:
 
 ```
 reset → tokens.primitives → tokens.semantic → tokens.component-defaults →
@@ -98,61 +73,36 @@ effects.holo-pan → effects.glitch → effects.demo → overrides
 ```
 
 Token tiers:
-- **Tier 1 Primitives** (`--bg-*`, `--r-*`, `--sp-*`, `--z-*`) — raw palette and scale, read-only
+- **Tier 1 Primitives** (`--_bg-*`, `--r-*`, `--sp-*`, `--z-*`) — raw palette and scale, read-only
 - **Tier 2 Semantic** (`--bg`, `--panel`, `--text`, `--accent`) — intent-expressive aliases
 - **Tier 3 Component** (`--comp-*`, `--btn-*`) — consumed directly by `.the-component`
 
----
+## Extending
 
-## How Design Is Applied
+All extension tasks are data-driven — adding options, lenses, presets, schemes, and capability layers never requires touching any JavaScript file.
 
-Selecting a parameter value adds a single CSS class to `.the-component`. The full class string always looks like:
+- **Add a new option** → [`docs/extend/1-adding-a-new-option.md`](docs/extend/1-adding-a-new-option.md)
+- **Add a new design axis** → [`docs/extend/2-adding-a-parameter-type.md`](docs/extend/2-adding-a-parameter-type.md)
+- **Add a new lens** → [`docs/extend/3-adding-a-new-lens.md`](docs/extend/3-adding-a-new-lens.md)
+- **Add a capability layer** → [`docs/extend/4-capability-layers.md`](docs/extend/4-capability-layers.md)
+- **Author presets/schemes** → [`docs/extend/5-presets-and-schemes.md`](docs/extend/5-presets-and-schemes.md)
+- **Modify tokens** → [`docs/extend/6-modifying-tokens.md`](docs/extend/6-modifying-tokens.md)
+- **Modify app config** → [`docs/extend/7-modifying-app-config.md`](docs/extend/7-modifying-app-config.md)
 
-```
-the-component  surf-velvet  shape-pill  depth-raised  mo-elastic  density-normal
-```
-
-`applyDesign()` in `state.js` rebuilds this class string from the current state and stamps it onto every `.the-component` instance across all three lenses simultaneously. Fonts are lazy-loaded on demand via a `<link rel="stylesheet">` injected into `<head>`, deduplicated by a `loadedFonts` Set.
-
----
-
-## Extending the Design System
-
-### Add a new surface, shape, depth, motion, or density option
-
-1. Add an entry to the relevant `paramTypes[].options` array in `data/design.config.json`:
-   ```json
-   { "value": "clay", "label": "Clay Muted Earthy" }
-   ```
-2. Add the corresponding CSS class in `app.css` inside the matching component layer:
-   ```css
-   /* inside @layer component.surface */
-   .surf-clay {
-     --comp-bg: #c4a882;
-     --comp-color: #2b1f14;
-   }
-   ```
-3. No JavaScript changes required. The UI and class builder are fully data-driven.
-
-### Add a new parameter axis
-
-1. Define a new `propSet` in `data/design.config.json`.
-2. Add a new entry to `paramTypes` referencing that `propSet`.
-3. Author CSS classes following the `cssPrefix-value` naming convention.
-4. Update `docs/COMPONENT-CONTRACT.md` to document which CSS tokens the axis consumes.
-
-### Author presets and schemes
-
-Add entries to `data/library.json`. A **preset** is a partial selection (one or more paramType values). A **scheme** composes multiple presets and can activate optional capability layers. No JS or CSS changes are needed — `applyScheme()` in `main.js` reads `library.json` at runtime.
-
----
+See [`docs/EXTENDING.md`](docs/EXTENDING.md) for a decision guide and file change matrix.
 
 ## Documentation
 
-All architecture decisions, naming conventions, JSON schemas, and cross-file contracts live in the `/docs` directory. Start with:
+All architecture decisions, naming conventions, JSON schemas, and cross-file contracts live in the `/docs` directory:
 
-- **`ARCHITECTURE.md`** — module graph, data flow, and runtime cache contracts
-- **`CONVENTIONS.md`** — mandatory naming rules for CSS, JS, and JSON
-- **`COMPONENT-CONTRACT.md`** — which propSets each component template axis consumes
-- **`SCHEMAS.md`** — JSON Schema definitions for every config shape
-- **`DIAGRAMS.md`** — Mermaid flowcharts for every major runtime path
+| Document | Purpose |
+|---|---|
+| [`CONVENTIONS.md`](docs/CONVENTIONS.md) | Canonical naming and structural rules |
+| [`SCHEMAS.md`](docs/SCHEMAS.md) | JSON Schema definitions for every config shape |
+| [`TOKEN-MAP.md`](docs/TOKEN-MAP.md) | Complete token lineage mapping |
+| [`PROP-SETS.md`](docs/PROP-SETS.md) | Authoritative per-prop registry |
+| [`LAYER-STACK.md`](docs/LAYER-STACK.md) | `@layer` ordering and responsibilities |
+| [`COMPONENT-CONTRACT.md`](docs/COMPONENT-CONTRACT.md) | Which propSets `.the-component` consumes |
+| [`ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Module graph, data flow, and runtime cache contracts |
+| [`DIAGRAMS.md`](docs/DIAGRAMS.md) | Mermaid flowcharts for every major runtime path |
+| [`EXTENDING.md`](docs/EXTENDING.md) | Index and decision guide for extend/ guides |

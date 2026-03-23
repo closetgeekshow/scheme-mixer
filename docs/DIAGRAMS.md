@@ -1,6 +1,10 @@
 # DIAGRAMS
 
+Standalone Mermaid diagram library. Each diagram is numbered, titled, and 100% accurate to source behaviour.
+
 ## 1 — Boot & Init Sequence
+
+This diagram shows the full boot sequence from browser load to `init()` execution. It runs once when the page first loads.
 
 ```mermaid
 flowchart TD
@@ -28,9 +32,9 @@ flowchart TD
     style O fill:#3a2a4a,color:#e8e8e8
 ```
 
-***
-
 ## 2 — Config Fetch (`config.js`)
+
+This diagram shows how `config.js` fetches all three JSON config files in parallel and exports them. It runs once at module evaluation time.
 
 ```mermaid
 flowchart TD
@@ -57,9 +61,9 @@ flowchart TD
     style P fill:#2a4a2a,color:#e8e8e8
 ```
 
-***
-
 ## 3 — State Derivation (`state.js`)
+
+This diagram shows how `state.js` derives its module-level state and caches from `DESIGN_CONFIG`. It runs once at module evaluation time.
 
 ```mermaid
 flowchart LR
@@ -78,9 +82,9 @@ flowchart LR
     style E fill:#2a4a2a,color:#e8e8e8
 ```
 
-***
-
 ## 4 — `buildApp()` DOM Construction (`ui.js`)
+
+This diagram shows how `buildApp()` constructs the entire app DOM from templates and config. It runs once during `init()`.
 
 ```mermaid
 flowchart TD
@@ -111,9 +115,9 @@ flowchart TD
     style S fill:#3a2a4a,color:#e8e8e8
 ```
 
-***
-
 ## 5 — `createLens()` Factory (`lens.js`)
+
+This diagram shows how `createLens()` builds a single lens panel from a lens config object. It runs once per lens during `buildApp()`.
 
 ```mermaid
 flowchart TD
@@ -151,9 +155,9 @@ flowchart TD
     style S fill:#2a4a2a,color:#e8e8e8
 ```
 
-***
-
 ## 6 — `applyDesign()` (`state.js`)
+
+This diagram shows the full `applyDesign()` flow from font loading to class stamping. It runs on every parameter change and during `init()`.
 
 ```mermaid
 flowchart TD
@@ -179,9 +183,9 @@ flowchart TD
     style K fill:#2a4a2a,color:#e8e8e8
 ```
 
-***
-
 ## 7 — `updateCamera()` Math (`lens.js`)
+
+This diagram shows the camera transform math that positions the component inside a lens viewport. It runs on every pan, zoom, or resize event.
 
 ```mermaid
 flowchart TD
@@ -202,9 +206,18 @@ flowchart TD
     style I fill:#2a4a2a,color:#e8e8e8
 ```
 
-***
+**Transform formula:**
+```
+tx = vW/2 − cam.x × cW × cam.zoom
+ty = vH/2 − cam.y × cH × cam.zoom
+content.style.transform = translate(tx px, ty px) scale(cam.zoom)
+```
+
+Source: `lens.js` `updateCamera()`.
 
 ## 8 — Lens Pointer / Wheel / Touch Interactions
+
+This diagram shows the per-lens and global pointer handlers that enable pan, zoom, and touch interactions. The per-lens handlers run on each lens viewport; the global handlers run once on `window`.
 
 ```mermaid
 flowchart TD
@@ -231,9 +244,9 @@ flowchart TD
     style Global fill:#1a1a2e
 ```
 
-***
-
 ## 9 — Param `<select>` Change Flow
+
+This diagram shows the full flow from a user changing a parameter select to the component updating. It runs on every parameter change.
 
 ```mermaid
 flowchart TD
@@ -250,9 +263,9 @@ flowchart TD
     style H fill:#2a4a2a,color:#e8e8e8
 ```
 
-***
-
 ## 10 — `randomize()` (`main.js`)
+
+This diagram shows how `randomize()` picks a random option for each parameter and applies it. It runs when the user clicks the Randomize button.
 
 ```mermaid
 flowchart TD
@@ -268,9 +281,9 @@ flowchart TD
     style G fill:#2a4a2a,color:#e8e8e8
 ```
 
-***
-
 ## 11 — `triggerDemo()` (`main.js`)
+
+This diagram shows how `triggerDemo()` staggers the `.demo-active` class across all component instances. It runs when the user clicks the Run Demo button.
 
 ```mermaid
 flowchart TD
@@ -287,9 +300,17 @@ flowchart TD
     style I fill:#1a1a2e,color:#e8e8e8
 ```
 
-***
+**Stagger formula:**
+```
+delay per component = idx × 100ms
+total animation end = demoActiveDuration + (componentCount − 1) × 100ms
+```
+
+Source: `main.js` `triggerDemo()`.
 
 ## 12 — `applyScheme()` (`main.js`)
+
+This diagram shows how `applyScheme()` merges presets and activates capability layers. It runs when a scheme is invoked via `applyScheme('scheme-id')`.
 
 ```mermaid
 flowchart TD
@@ -316,9 +337,9 @@ flowchart TD
     style Q fill:#2a4a2a,color:#e8e8e8
 ```
 
-***
-
 ## 13 — Maximize / Restore (`lens.js`)
+
+This diagram shows how `toggleMaximize()` expands a lens to full viewport or restores it. It runs when the user clicks the maximize button.
 
 ```mermaid
 flowchart TD
@@ -337,9 +358,9 @@ flowchart TD
     style I fill:#2a4a2a,color:#e8e8e8
 ```
 
-***
-
 ## 14 — Fit / 1× Toggle (fixed lens, `lens.js`)
+
+This diagram shows how the fixed lens toggles between fit-to-viewport and 1:1 pixel rendering. It runs when the user clicks the 1×/Fit button.
 
 ```mermaid
 flowchart TD
@@ -359,9 +380,9 @@ flowchart TD
     style I fill:#2a4a2a,color:#e8e8e8
 ```
 
-***
-
 ## 15 — Popover Show / Hide (`ui.js`)
+
+This diagram shows how `showPopover()` positions the global popover and how it's dismissed. It runs when the user clicks a help button.
 
 ```mermaid
 flowchart TD
@@ -384,9 +405,9 @@ flowchart TD
     style M fill:#2a4a2a,color:#e8e8e8
 ```
 
-***
-
 ## 16 — Mobile Overlay Flow (`main.js`)
+
+This diagram shows how the mobile overlay is shown and hidden. It runs when the user interacts with mobile UI buttons.
 
 ```mermaid
 flowchart LR
@@ -402,9 +423,9 @@ flowchart LR
     style H fill:#2a4a2a,color:#e8e8e8
 ```
 
-***
-
 ## 17 — CSS Token Resolution Cascade (`app.css`)
+
+This diagram shows how CSS custom properties cascade from Tier 1 primitives through semantic aliases to component defaults and finally to the component. It runs on every paint.
 
 ```mermaid
 flowchart TD
@@ -427,9 +448,9 @@ flowchart TD
     style M fill:#2a4a2a,color:#e8e8e8
 ```
 
-***
-
 ## 18 — JS Module DAG
+
+This diagram shows the import relationships between all JS modules. The dashed arrow indicates a dynamic import used to break a circular dependency.
 
 ```mermaid
 flowchart LR

@@ -1,8 +1,6 @@
-# HOWTO: Modify App Behavior via app.config.json
+# HOWTO: Modify App Behavior via `app.config.json`
 
-`data/app.config.json` controls runtime behavior: camera physics, demo timing,
-active capability layers, and the primitive token registry.
-It does not contain any design option data — that lives in `design.config.json`.
+`data/app.config.json` controls runtime behavior: camera physics, demo timing, active capability layers, and the primitive token registry. It does not contain any design option data — that lives in `design.config.json`.
 
 ## Schema Reference
 
@@ -32,14 +30,14 @@ It does not contain any design option data — that lives in `design.config.json
 }
 ```
 
- * `[0.5, 3]` — default; usable range for most components
- * `[0.1, 10]` — extreme range for micro-detail inspection
+- `[0.5, 3]` — default; usable range for most components
+- `[0.1, 10]` — extreme range for micro-detail inspection
+
+**MUST NOT** rule: `zoomClamp[0]` MUST NOT be set below `0.1` — zero zoom causes division errors in `updateCamera()` in `lens.js`.
 
 ### Pan range
 
-`camera.panClamp` sets how far the focal point can travel as a fraction of
-the component's width/height. `[-1, 1]` means the center can move one full
-component-width in any direction.
+`camera.panClamp` sets how far the focal point can travel as a fraction of the component's width/height. `[-1, 1]` means the center can move one full component-width in any direction.
 
 ```json
 "camera": {
@@ -47,22 +45,21 @@ component-width in any direction.
 }
 ```
 
-Increase the clamp range if you want users to be able to inspect areas far
-outside the component boundary (e.g., examining overflow shadows).
+Increase the clamp range if you want users to be able to inspect areas far outside the component boundary (e.g., examining overflow shadows).
 
 ## Demo Duration
 
-`demoActiveDuration` controls how long (in milliseconds) the `.demo-active`
-class remains on each component during a Run Demo sequence.
+`demoActiveDuration` controls how long (in milliseconds) the `.demo-active` class remains on each component during a Run Demo sequence.
 
 ```json
 "demoActiveDuration": 2400
 ```
 
- * Lower values (800–1200ms) give a quick, punchy preview.
- * Higher values (2000–3000ms) let slow transitions (like `mo-float`) complete.
- * Components are staggered by 100ms each, so the last component's animation
-   ends at `demoActiveDuration + (componentCount - 1) * 100` ms.
+- Lower values (800–1200ms) give a quick, punchy preview.
+- Higher values (2000–3000ms) let slow transitions (like `mo-float`) complete.
+- Components are staggered by 100ms each, so the last component's animation ends at `demoActiveDuration + (componentCount - 1) * 100` ms.
+
+Source: `main.js` `triggerDemo()`.
 
 ## Capability Layer Registry
 
@@ -77,8 +74,8 @@ Each entry controls an opt-in CSS effect layer:
 }
 ```
 
- * `alwaysOn: true` — `main.js` adds the id class to `:root` during init.
- * `alwaysOn: false` — the layer is only activated by a Scheme (via `applyScheme()`).
+- `alwaysOn: true` — `main.js` adds the id class to `:root` during init via `activateAlwaysOnCapabilities()`.
+- `alwaysOn: false` — the layer is only activated by a Scheme (via `applyScheme()`).
 
 To disable an always-on effect (e.g., to stop the holo-pan animation):
 ```json
@@ -87,8 +84,7 @@ To disable an always-on effect (e.g., to stop the holo-pan animation):
 
 ## Primitive Registry
 
-The `primitiveRegistry` array documents all Tier 1 CSS custom properties.
-It is used by future developer and validation tooling  — it has no runtime effect on the app.
+The `primitiveRegistry` array documents all Tier 1 CSS custom properties. It is used by future developer and validation tooling — it has no runtime effect on the app.
 
 ```json
 "primitiveRegistry": [
@@ -97,13 +93,11 @@ It is used by future developer and validation tooling  — it has no runtime eff
 ]
 ```
 
-Every `--_` prefixed token you add to `@layer tokens.primitives` in `app.css`
-MUST have a matching entry here.
+Every `--_` prefixed token you add to `@layer tokens.primitives` in `app.css` MUST have a matching entry here.
 
 ## App Title and Subtitle
 
-The sidebar title and subtitle are read from `app.config.json` at init time
-by `buildApp()` in `ui.js`:
+The sidebar title and subtitle are read from `app.config.json` at init time by `buildApp()` in `ui.js`:
 
 ```json
 {
@@ -114,8 +108,8 @@ by `buildApp()` in `ui.js`:
 
 ## Checklist
 
- * [ ] `demoActiveDuration` is at least 800ms to allow slow transitions to show
- * [ ] `zoomClamp[0]` is ≥ 0.1 (zero zoom causes division errors in camera math)
- * [ ] `panClamp` values are symmetric (e.g., `[-1, 1]`) unless an asymmetric viewport is intended
- * [ ] New capability layer entries have a unique id matching the `:root` class in `app.css`
- * [ ] New Tier 1 primitives are registered in `primitiveRegistry`
+- [ ] `demoActiveDuration` is at least 800ms to allow slow transitions to show
+- [ ] `zoomClamp[0]` is ≥ 0.1 (zero zoom causes division errors in camera math)
+- [ ] `panClamp` values are symmetric (e.g., `[-1, 1]`) unless an asymmetric viewport is intended
+- [ ] New capability layer entries have a unique id matching the `:root` class in `app.css`
+- [ ] New Tier 1 primitives are registered in `primitiveRegistry`

@@ -1,20 +1,18 @@
 # HOWTO: Modify Design Tokens
 
-Scheme Remix Studio uses a three-tier CSS custom property system.
-Modifications at each tier have different scopes and rules.
+Scheme Remix Studio uses a three-tier CSS custom property system. Modifications at each tier have different scopes and rules.
 
 ## Token Tiers
 
-| Tier | Where | Prefix | Scope |
-|---|---|---|---|
-| 1 — Primitives | `@layer tokens.primitives` | `--_` | Raw palette and scale values; read-only at runtime |
-| 2 — Semantic | `@layer tokens.semantic` | none | Intent aliases; reference Tier 1 values |
-| 3 — Component Defaults | `@layer tokens.component-defaults` | `--comp-*`, `--btn-*` | Default values for all component axes |
+| Tier | Layer | Prefix | Scope | Runtime mutability |
+|---|---|---|---|---|
+| 1 — Primitives | `@layer tokens.primitives` | `--_` | Raw palette and scale values | Read-only at runtime |
+| 2 — Semantic | `@layer tokens.semantic` | none | Intent aliases referencing Tier 1 | Mutable |
+| 3 — Component Defaults | `@layer tokens.component-defaults` | `--comp-*`, `--btn-*` | Default values for all component axes | Mutable |
 
 ## Modifying Tier 1 Primitives
 
-Tier 1 tokens define the raw color palette, spacing scale, radius scale, and z-index scale.
-Edit them in `@layer tokens.primitives` in `app.css`.
+Tier 1 tokens define the raw color palette, spacing scale, radius scale, and z-index scale. Edit them in `@layer tokens.primitives` in `app.css`.
 
 ```css
 @layer tokens.primitives {
@@ -27,15 +25,14 @@ Edit them in `@layer tokens.primitives` in `app.css`.
 }
 ```
 
-Rule: Any new Tier 1 primitive MUST also be added to `app.config.json` → `primitiveRegistry`:
+**MUST** rule: Any new `--_` token MUST be added to `app.config.json` `primitiveRegistry`:
 ```json
 { "name": "--_my-new-color", "cssType": "color" }
 ```
 
 ## Modifying Tier 2 Semantic Tokens
 
-Tier 2 tokens map semantic names to Tier 1 values. Changing a semantic token
-updates every UI element that references it.
+Tier 2 tokens map semantic names to Tier 1 values. Changing a semantic token updates every UI element that references it.
 
 ```css
 @layer tokens.semantic {
@@ -60,10 +57,7 @@ updates every UI element that references it.
 
 ## Modifying Tier 3 Component Defaults
 
-Tier 3 tokens set the fallback values for `.the-component` and `.comp-btn` before
-any `paramType` option class overrides them.
-Changing these values affects the "default" appearance before any option is selected
-and provides the initial state for CSS transitions.
+Tier 3 tokens set the fallback values for `.the-component` and `.comp-btn` before any `paramType` option class overrides them. Changing these values affects the "default" appearance before any option is selected and provides the initial state for CSS transitions.
 
 ```css
 @layer tokens.component-defaults {
@@ -76,10 +70,9 @@ and provides the initial state for CSS transitions.
 }
 ```
 
-Rule: Fallbacks for component tokens MUST be defined only here,
-never inline inside component option rules like `.surf-velvet { ... }`.
+**MUST** rule: Fallbacks for component tokens MUST be defined only here, never inline inside component option rules like `.surf-velvet { ... }`.
 
-## Modifying the Layout
+## Modifying Layout
 
 To change the sidebar width, update the Tier 1 primitive:
 
@@ -101,28 +94,9 @@ To change the lens grid ratio (how much vertical space the fixed lens takes):
 }
 ```
 
-## Adding a New Tier 1 Primitive
+## The `@layer overrides` Safety Valve
 
- * Add the value to `@layer tokens.primitives`:
-```css
---_purple: #a855f7;
-```
-
- * Optionally expose it as a semantic alias in `@layer tokens.semantic`:
-```css
---highlight: var(--_purple);
-```
-
- * Register it in `data/app.config.json` → `primitiveRegistry`:
-```json
-{ "name": "--_purple", "cssType": "color" }
-```
-
-## The @layer overrides Safety Valve
-
-The final `@layer overrides` block in `app.css` is reserved for targeted
-fixes and one-off tweaks that must take precedence over all other layers.
-Use it sparingly:
+The final `@layer overrides` block in `app.css` is reserved for targeted fixes and one-off tweaks that must take precedence over all other layers. Use it sparingly:
 
 ```css
 @layer overrides {
@@ -133,10 +107,12 @@ Use it sparingly:
 }
 ```
 
+**SHOULD** rule: `@layer overrides` SHOULD be used only for targeted bugfixes, never for general styling.
+
 ## Checklist
 
- * [ ] Tier 1 changes: new primitives also added to `app.config.json` → `primitiveRegistry`
- * [ ] Tier 3 changes: defaults only in `tokens.component-defaults`, never inline
- * [ ] `--sidebar-width` change is consistent with any mobile breakpoint adjustments
- * [ ] New semantic tokens reference Tier 1 primitives where possible
- * [ ] `@layer overrides` used only for targeted bugfixes, not general styling
+- [ ] Tier 1 changes: new primitives also added to `app.config.json` → `primitiveRegistry`
+- [ ] Tier 3 changes: defaults only in `tokens.component-defaults`, never inline
+- [ ] `--sidebar-width` change is consistent with any mobile breakpoint adjustments
+- [ ] New semantic tokens reference Tier 1 primitives where possible
+- [ ] `@layer overrides` used only for targeted bugfixes, not general styling

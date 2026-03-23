@@ -1,25 +1,24 @@
 # HOWTO: Add Presets and Schemes to the Library
 
-Presets are named snapshots of parameter selections. Schemes group presets
-together with optional capability layer overrides to form a complete design story.
-Both live exclusively in `data/library.json`. No JS or CSS changes are needed.
+Presets are named snapshots of parameter selections. Schemes group presets together with optional capability layer overrides to form a complete design story. Both live exclusively in `data/library.json`. No JS or CSS changes are needed.
 
 ## Overview
 
-`library.json`
-├── `presets`   — named `{ paramId: optionValue }` maps
-└── `schemes`   — ordered lists of preset IDs + optional capability layers
+```
+library.json
+├── presets[]  — { paramId: optionValue } selection maps
+└── schemes[]  — ordered preset references + capability layer overrides
+```
 
 `applyScheme(schemeId)` in `main.js` processes schemes by:
- * Applying each referenced preset's selection map to state (later presets override earlier ones)
- * Resetting all non-`alwaysOn` capability layers from `:root`
- * Adding each `capabilityLayers` id to `:root`
- * Calling `applyDesign()` to reflect the new state
+- Applying each referenced preset's selection map to state (later presets override earlier ones)
+- Resetting all non-`alwaysOn` capability layers from `:root`
+- Adding each `capabilityLayers` id to `:root`
+- Calling `applyDesign()` to reflect the new state
 
 ## Adding a Preset
 
-A preset records one or more `paramId` → `optionValue` pairs. You do not need
-to specify all `paramTypes` — unspecified axes keep their current values.
+A preset records one or more `paramId` → `optionValue` pairs. You do not need to specify all `paramTypes` — unspecified axes keep their current values.
 
 ```json
 {
@@ -45,14 +44,11 @@ to specify all `paramTypes` — unspecified axes keep their current values.
 | `description` | string | ❌ | Optional tooltip or docs text |
 | `selection` | object | ✅ | `{ paramTypeId: optionValue }` map |
 
-The selection keys must match `paramType.id` values in `design.config.json`.
-The selection values must match valid `option.value` strings for that `paramType`.
-Unknown keys are silently skipped by `applyScheme()`.
+The selection keys must match `paramType.id` values in `design.config.json`. The selection values must match valid `option.value` strings for that `paramType`. Unknown keys are silently skipped by `applyScheme()`.
 
 ## Adding a Scheme
 
-A Scheme references one or more preset IDs. Multiple presets are merged in order —
-properties from later presets override earlier ones.
+A Scheme references one or more preset IDs. Multiple presets are merged in order — properties from later presets override earlier ones.
 
 ```json
 {
@@ -77,6 +73,24 @@ properties from later presets override earlier ones.
 | `presetIds` | string[] | ✅ | Ordered list of preset IDs to apply (min 1) |
 | `capabilityLayers` | string[] | ❌ | Capability layer IDs to activate (overrides non-`alwaysOn` layers) |
 
+### Preset Merge Flow
+
+```mermaid
+flowchart TD
+    A(["applyScheme(schemeId)"]) --> B["Find scheme in LIBRARY.schemes"]
+    B --> C["for each presetId in scheme.presetIds"]
+    C --> D["Find preset in LIBRARY.presets"]
+    D --> E["for each [paramId, value] in preset.selection"]
+    E --> F["state[paramId] = value<br/>paramSelectMap selects synced"]
+    F --> C
+    C --> G["Remove non-alwaysOn capability layers"]
+    G --> H["Add scheme.capabilityLayers to :root"]
+    H --> I["applyDesign()"]
+
+    style A fill:#1e3a5f,color:#e8e8e8
+    style I fill:#2a4a2a,color:#e8e8e8
+```
+
 ## Invoking a Scheme
 
 Call `applyScheme` from the browser console for testing:
@@ -86,8 +100,7 @@ Call `applyScheme` from the browser console for testing:
 applyScheme('scheme-cyberpunk');
 ```
 
-To wire it to a UI button, add a button in `index.html` and attach a listener
-in `main.js`:
+To wire it to a UI button, add a button in `index.html` and attach a listener in `main.js`:
 
 ```javascript
 // In main.js init block:
@@ -95,7 +108,7 @@ document.getElementById('btn-scheme-cyberpunk')
   ?.addEventListener('click', () => applyScheme('scheme-cyberpunk'));
 ```
 
-## Complete library.json Example
+## Complete `library.json` Example
 
 ```json
 {
@@ -149,9 +162,9 @@ document.getElementById('btn-scheme-cyberpunk')
 
 ## Checklist
 
- * [ ] Each preset has a unique id
- * [ ] Each preset's selection keys match valid `paramType.id` values
- * [ ] Each preset's selection values match valid `option.value` strings
- * [ ] Each scheme has a unique id
- * [ ] All `presetIds` in a scheme reference existing preset id values
- * [ ] All `capabilityLayers` ids are registered in `app.config.json` → `capabilityLayerRegistry`
+- [ ] Each preset has a unique id
+- [ ] Each preset's selection keys match valid `paramType.id` values
+- [ ] Each preset's selection values match valid `option.value` strings
+- [ ] Each scheme has a unique id
+- [ ] All `presetIds` in a scheme reference existing preset id values
+- [ ] All `capabilityLayers` ids are registered in `app.config.json` → `capabilityLayerRegistry`

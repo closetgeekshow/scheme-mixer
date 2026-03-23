@@ -1,13 +1,10 @@
 # HOWTO: Add a New Lens
 
-Lenses are the viewport panels that display `.the-component` at different zoom
-levels and focal points. All lens configuration is data-driven via
-`data/design.config.json`. No JavaScript changes are required.
+Lenses are the viewport panels that display `.the-component` at different zoom levels and focal points. All lens configuration is data-driven via `data/design.config.json`. No JavaScript changes are required.
 
 ## Overview
 
-Each entry in `design.config.json` → `lenses` produces one `.lens` panel in the `#app`
-grid. There are two lens modes:
+Each entry in `design.config.json` → `lenses` produces one `.lens` panel in the `#app` grid. There are two lens modes:
 
 | Mode | `fixed: true` | `fixed: false` |
 |---|---|---|
@@ -19,7 +16,7 @@ grid. There are two lens modes:
 
 Only one fixed lens is expected. Non-fixed lenses fill the bottom row in order.
 
-## Step 1 — Add the lens to design.config.json
+## Step 1 — Add the lens to `design.config.json`
 
 Open `data/design.config.json`. Add a new object to the `lenses` array.
 
@@ -47,17 +44,15 @@ Open `data/design.config.json`. Add a new object to the `lenses` array.
 
 ### Zoom range
 
-The global zoom limits come from `data/app.config.json` → `camera.zoomClamp`.
-The default is `[0.5, 3]`. Adjust if you need a wider range.
+The global zoom limits come from `data/app.config.json` → `camera.zoomClamp`. The default is `[0.5, 3]`. Adjust if you need a wider range.
 
 ## Step 2 — Adjust the app grid (optional)
 
 The `#app` grid in `app.css` currently allocates:
- * Row 1 — `2fr` (top, fixed lens)
- * Row 2 — `1.2fr` (bottom, zoom lenses)
+- Row 1 — `2fr` (top, fixed lens)
+- Row 2 — `1.2fr` (bottom, zoom lenses)
 
-With three or more zoom lenses, the bottom row still auto-splits into equal columns
-because `grid-template-columns: repeat(2, minmax(0, 1fr))` handles two lenses.
+With three or more zoom lenses, the bottom row still auto-splits into equal columns because `grid-template-columns: repeat(2, minmax(0, 1fr))` handles two lenses.
 
 For three zoom lenses, update the grid in `@layer shell.layout`:
 
@@ -69,8 +64,7 @@ For three zoom lenses, update the grid in `@layer shell.layout`:
 }
 ```
 
-The CSS selectors in `@layer shell.lens` that place lenses by `nth-of-type` may also
-need extending if you add a fourth or fifth lens panel:
+The CSS selectors in `@layer shell.lens` that place lenses by `nth-of-type` may also need extending if you add a fourth or fifth lens panel:
 
 ```css
 /* Add to @layer shell.lens */
@@ -82,24 +76,25 @@ need extending if you add a fourth or fifth lens panel:
 
 ## Step 3 — Test the new lens
 
- * Reload `index.html` — the new lens panel should appear immediately.
- * Drag inside the new lens to pan; scroll to zoom.
- * Click the ⤢ maximize button to confirm full-screen toggle works.
- * Click the reset (↺) button to confirm the lens returns to its `originCamera`.
+- Reload `index.html` — the new lens panel should appear immediately.
+- Drag inside the new lens to pan; scroll to zoom.
+- Click the ⤢ maximize button to confirm full-screen toggle works.
+- Click the reset (↺) button to confirm the lens returns to its `originCamera`.
 
 ### Camera reset behavior
 
 `originCamera` is populated in `createLens()` from the lens config:
-`originCamera: { zoom: lensConfig.zoom, x: lensConfig.x, y: lensConfig.y }`
+```js
+originCamera: { zoom: lensConfig.zoom, x: lensConfig.x, y: lensConfig.y }
+```
 
-The reset button always restores to these initial values without re-reading the JSON,
-so changes to `design.config.json` take effect only on next page load.
+The reset button always restores to these initial values without re-reading the JSON, so changes to `design.config.json` take effect only on next page load.
 
 ## Checklist
 
- * [ ] New lens object added to `design.config.json` → `lenses` with unique id
- * [ ] `zoom` is within `app.config.json` → `camera.zoomClamp` range (or clamp updated)
- * [ ] `fixed: false` for interactive lenses
- * [ ] `#app` grid updated in `app.css` if adding more than two zoom lenses
- * [ ] `nth-of-type` selectors in `shell.lens` extended if adding a 4th+ lens
- * [ ] Manual test: drag, zoom, maximize, reset all work correctly
+- [ ] New lens object added to `design.config.json` → `lenses` with unique id
+- [ ] `zoom` is within `app.config.json` → `camera.zoomClamp` range (or clamp updated)
+- [ ] `fixed: false` for interactive lenses
+- [ ] `#app` grid updated in `app.css` if adding more than two zoom lenses
+- [ ] `nth-of-type` selectors in `shell.lens` extended if adding a 4th+ lens
+- [ ] Manual test: drag, zoom, maximize, reset all work correctly
