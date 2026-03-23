@@ -1,0 +1,276 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+================================================================
+File Summary
+================================================================
+
+Purpose:
+--------
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+
+File Format:
+------------
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+4. Multiple file entries, each consisting of:
+  a. A separator line (================)
+  b. The file path (File: path/to/file)
+  c. Another separator line
+  d. The full contents of the file
+  e. A blank line
+
+Usage Guidelines:
+-----------------
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+
+Notes:
+------
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: data
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+
+Additional Info:
+----------------
+
+================================================================
+Directory Structure
+================================================================
+data/app.config.json
+data/design.config.json
+data/library.json
+
+================================================================
+Files
+================================================================
+
+================
+File: data/app.config.json
+================
+{
+  "title": "Scheme Remix Studio",
+  "subtitle": "Parametric component design system",
+  "demoActiveDuration": 1800,
+  "camera": {
+    "panClamp": [-1, 1],
+    "zoomClamp": [0.5, 3]
+  },
+  "capabilityLayerRegistry": [
+    {
+      "id": "fx-demo",
+      "layer": "effects.demo",
+      "alwaysOn": true,
+      "description": "Enables demo-active motion accents and lens hover transforms."
+    },
+    {
+      "id": "fx-holo-pan",
+      "layer": "effects.holo-pan",
+      "alwaysOn": true,
+      "description": "Animates holographic surfaces with a slow pan."
+    }
+  ],
+  "primitiveRegistry": [
+    {"name": "--_bg-950", "cssType": "color"},
+    {"name": "--_bg-900", "cssType": "color"},
+    {"name": "--_bg-800", "cssType": "color"},
+    {"name": "--_border-low", "cssType": "color"},
+    {"name": "--_border-mid", "cssType": "color"},
+    {"name": "--_text-hi", "cssType": "color"},
+    {"name": "--_text-mid", "cssType": "color"},
+    {"name": "--_text-lo", "cssType": "color"},
+    {"name": "--_accent", "cssType": "color"},
+    {"name": "--_green", "cssType": "color"},
+    {"name": "--r-xs", "cssType": "length"},
+    {"name": "--r-sm", "cssType": "length"},
+    {"name": "--r-md", "cssType": "length"},
+    {"name": "--r-lg", "cssType": "length"},
+    {"name": "--r-xl", "cssType": "length"},
+    {"name": "--r-2xl", "cssType": "length"},
+    {"name": "--sp-xs", "cssType": "length"},
+    {"name": "--sp-sm", "cssType": "length"},
+    {"name": "--sp-md", "cssType": "length"},
+    {"name": "--sp-lg", "cssType": "length"},
+    {"name": "--sp-xl", "cssType": "length"},
+    {"name": "--z-lens-overlay", "cssType": "number"},
+    {"name": "--z-maximized", "cssType": "number"},
+    {"name": "--z-mobile-bar", "cssType": "number"},
+    {"name": "--z-popover", "cssType": "number"},
+    {"name": "--sidebar-width", "cssType": "length"}
+  ]
+}
+
+================
+File: data/design.config.json
+================
+{
+  "propSets": [
+    {
+      "id": "surfaceMaterial",
+      "label": "Surface Material",
+      "props": [
+        {"name": "--comp-bg", "cssType": "string", "initial": "ffffff", "registerProperty": false},
+        {"name": "--comp-bg-img", "cssType": "string", "initial": "none", "registerProperty": false},
+        {"name": "--comp-bg-size", "cssType": "string", "initial": "auto", "registerProperty": false},
+        {"name": "--comp-bg-pos", "cssType": "string", "initial": "0 0", "registerProperty": false},
+        {"name": "--comp-backdrop", "cssType": "string", "initial": "none", "registerProperty": false},
+        {"name": "--comp-color", "cssType": "color", "initial": "000000", "registerProperty": true},
+        {"name": "--comp-font", "cssType": "string", "initial": "var(--sans)", "registerProperty": false},
+        {"name": "--comp-font-weight", "cssType": "number", "initial": 400, "registerProperty": false},
+        {"name": "--comp-text-transform", "cssType": "string", "initial": "none", "registerProperty": false},
+        {"name": "--comp-letter-spacing", "cssType": "string", "initial": "normal", "registerProperty": false},
+        {"name": "--btn-bg", "cssType": "string", "initial": "eeeeee", "registerProperty": false},
+        {"name": "--btn-color", "cssType": "string", "initial": "inherit", "registerProperty": false}
+      ]
+    },
+    {
+      "id": "shapeGeometry",
+      "label": "Shape Geometry",
+      "props": [
+        {"name": "--comp-radius", "cssType": "length", "initial": "8px", "registerProperty": true},
+        {"name": "--comp-clip", "cssType": "string", "initial": "none", "registerProperty": false},
+        {"name": "--btn-radius", "cssType": "length", "initial": "4px", "registerProperty": true},
+        {"name": "--btn-clip", "cssType": "string", "initial": "none", "registerProperty": false}
+      ]
+    },
+    {
+      "id": "depthElevation",
+      "label": "Depth Elevation",
+      "props": [
+        {"name": "--comp-shadow", "cssType": "string", "initial": "none", "registerProperty": false},
+        {"name": "--comp-border", "cssType": "string", "initial": "1px solid transparent", "registerProperty": false},
+        {"name": "--btn-shadow", "cssType": "string", "initial": "none", "registerProperty": false},
+        {"name": "--btn-border", "cssType": "string", "initial": "1px solid transparent", "registerProperty": false}
+      ]
+    },
+    {
+      "id": "motionDynamics",
+      "label": "Motion Dynamics",
+      "props": [
+        {"name": "--comp-motion", "cssType": "string", "initial": "all 300ms ease", "registerProperty": false}
+      ]
+    },
+    {
+      "id": "spatialDensity",
+      "label": "Spatial Density",
+      "props": [
+        {"name": "--comp-padding", "cssType": "length", "initial": "28px", "registerProperty": true},
+        {"name": "--comp-gap", "cssType": "length", "initial": "0px", "registerProperty": true},
+        {"name": "--comp-font-size-base", "cssType": "length", "initial": "1rem", "registerProperty": true},
+        {"name": "--comp-line-height", "cssType": "number", "initial": 1.6, "registerProperty": true},
+        {"name": "--btn-padding", "cssType": "string", "initial": "11px 20px", "registerProperty": false}
+      ]
+    }
+  ],
+  "paramTypes": [
+    {
+      "id": "surface",
+      "cssPrefix": "surf",
+      "label": "Surface Material",
+      "description": "Material finish and typography",
+      "propSetIds": ["surfaceMaterial"],
+      "options": [
+        {"value": "velvet", "label": "Velvet — Matte Solid", "fontsource": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"},
+        {"value": "console", "label": "Console — Retro Green", "fontsource": "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap"},
+        {"value": "glass", "label": "Glass — Neumorphic Blur", "fontsource": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"},
+        {"value": "frutiger", "label": "Frutiger — Swiss Modern", "fontsource": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"},
+        {"value": "memphis", "label": "Memphis — Postmodern", "fontsource": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"},
+        {"value": "artdeco", "label": "Art Deco — Deco Geometric", "fontsource": "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&display=swap"},
+        {"value": "grunge", "label": "Grunge — Distressed Grit", "fontsource": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"},
+        {"value": "holo", "label": "Holo — Iridescent Pan", "fontsource": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"}
+      ]
+    },
+    {
+      "id": "shape",
+      "cssPrefix": "shape",
+      "label": "Shape Geometry",
+      "description": "Silhouette and boundary style",
+      "propSetIds": ["shapeGeometry"],
+      "options": [
+        {"value": "pill", "label": "Pill — Smooth Capsule"},
+        {"value": "sharp", "label": "Sharp — Hard Edges"},
+        {"value": "soft", "label": "Soft — Gentle Rounds"},
+        {"value": "chamfer", "label": "Chamfer — Beveled Edge"},
+        {"value": "bauhaus", "label": "Bauhaus — Grid Modular"},
+        {"value": "concentric", "label": "Concentric — Nested Rings"},
+        {"value": "squircle", "label": "Squircle — Smooth Polygon"}
+      ]
+    },
+    {
+      "id": "depth",
+      "cssPrefix": "depth",
+      "label": "Depth Elevation",
+      "description": "Shadow, border, and Z-space",
+      "propSetIds": ["depthElevation"],
+      "options": [
+        {"value": "flat", "label": "Flat — No Shadow"},
+        {"value": "raised", "label": "Raised — Lifted Shadow"},
+        {"value": "sunken", "label": "Sunken — Inset Shadow"},
+        {"value": "neumorphic", "label": "Neumorphic — Soft UI"},
+        {"value": "brutalist", "label": "Brutalist — Harsh Border"},
+        {"value": "glowing", "label": "Glowing — Neon Edge"},
+        {"value": "concentric", "label": "Concentric — Ring Borders"}
+      ]
+    },
+    {
+      "id": "motion",
+      "cssPrefix": "mo",
+      "label": "Motion Dynamics",
+      "description": "Transition timing and easing",
+      "propSetIds": ["motionDynamics"],
+      "options": [
+        {"value": "velvet", "label": "Velvet — Smooth 300ms Ease"},
+        {"value": "console", "label": "Console — Snappy 150ms Linear"},
+        {"value": "elastic", "label": "Elastic — Springy 600ms Cubic"},
+        {"value": "glitch", "label": "Glitch — Stuttering 100ms Steps"},
+        {"value": "float", "label": "Float — Floating 400ms Ease-Out"},
+        {"value": "whip", "label": "Whip — Fast Snap 50ms Ease-Out"},
+        {"value": "spring", "label": "Spring — Bouncy 800ms Cubic"}
+      ]
+    },
+    {
+      "id": "density",
+      "cssPrefix": "density",
+      "label": "Spatial Density",
+      "description": "Padding, gaps, and typography rhythm",
+      "propSetIds": ["spatialDensity"],
+      "options": [
+        {"value": "compact", "label": "Compact — 14px Dense"},
+        {"value": "normal", "label": "Normal — 16px Default"},
+        {"value": "airy", "label": "Airy — 18px Breathing"},
+        {"value": "wide", "label": "Wide — 20px Spacious"}
+      ]
+    }
+  ],
+  "lenses": [
+    {"id": "actual", "zoom": 1, "desc": "Actual", "x": 0.5, "y": 0.5, "fixed": true},
+    {"id": "geometry", "zoom": 2, "desc": "Geometry", "x": 0.5, "y": 0.5, "fixed": false},
+    {"id": "surface", "zoom": 0.75, "desc": "Surface", "x": 0.3, "y": 0.3, "fixed": false}
+  ]
+}
+
+================
+File: data/library.json
+================
+{
+  "presets": [],
+  "schemes": []
+}
+
+
+
+
+================================================================
+End of Codebase
+================================================================
