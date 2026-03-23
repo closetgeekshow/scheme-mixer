@@ -1,8 +1,8 @@
 // js/lens.js
 // Lens construction, camera math, interactions, maximize, and fit/1x.
 
-import { APP_CONFIG, DESIGN_CONFIG } from './config.js';
-import { cameras, componentEls, lensCache, compClasses } from './state.js';
+import { APP_CONFIG, DESIGN_CONFIG } from '/js/config.js';
+import { cameras, componentEls, lensCache, compClasses } from '/js/state.js';
 
 // --- Template references ---
 

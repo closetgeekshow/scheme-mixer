@@ -1,9 +1,9 @@
 // js/main.js
 // Entry point: init, randomize, demo, scheme application.
 
-import { APP_CONFIG, DESIGN_CONFIG, LIBRARY } from './config.js';
-import { state, paramSelectMap, componentEls, applyDesign } from './state.js';
-import { buildApp } from './ui.js';
+import { APP_CONFIG, DESIGN_CONFIG, LIBRARY } from "/js/config.js";
+import { state, paramSelectMap, componentEls, applyDesign } from "/js/state.js";
+import { buildApp } from "/js/ui.js";
 
 // --- Actions ---
 
@@ -29,9 +29,9 @@ export function triggerDemo() {
   const els = Array.from(componentEls);
   els.forEach((el, idx) => {
     setTimeout(() => {
-      el.classList.add('demo-active');
+      el.classList.add("demo-active");
       setTimeout(() => {
-        el.classList.remove('demo-active');
+        el.classList.remove("demo-active");
       }, duration);
     }, idx * 100);
   });
@@ -82,35 +82,54 @@ function activateAlwaysOnCapabilities() {
 }
 
 function wireGlobalButtons() {
-  const btnRandomize = document.getElementById('btn-randomize');
-  const btnDemo = document.getElementById('btn-demo');
-  const mobileDemo = document.getElementById('mobile-btn-demo');
-  const mobileOverlay = document.getElementById('mobile-overlay');
-  const mobileClose = document.getElementById('mobile-overlay-close');
-  const mobileMax = document.getElementById('mobile-maximize');
-  const mobileApply = document.getElementById('mobile-apply');
+  const btnRandomize = document.getElementById("btn-randomize");
+  const btnDemo = document.getElementById("btn-demo");
+  const mobileDemo = document.getElementById("mobile-btn-demo");
+  const mobileOverlay = document.getElementById("mobile-overlay");
+  const mobileClose = document.getElementById("mobile-overlay-close");
+  const mobileMax = document.getElementById("mobile-maximize");
+  const mobileApply = document.getElementById("mobile-apply");
 
-  if (btnRandomize) btnRandomize.addEventListener('click', randomize);
-  if (btnDemo) btnDemo.addEventListener('click', triggerDemo);
-  if (mobileDemo) mobileDemo.addEventListener('click', triggerDemo);
+  if (btnRandomize) btnRandomize.addEventListener("click", randomize);
+  if (btnDemo) btnDemo.addEventListener("click", triggerDemo);
+  if (mobileDemo) mobileDemo.addEventListener("click", triggerDemo);
 
   if (mobileClose && mobileOverlay) {
-    mobileClose.addEventListener('click', () => {
-      mobileOverlay.classList.add('hidden');
+    mobileClose.addEventListener("click", () => {
+      mobileOverlay.classList.add("hidden");
     });
   }
 
-  if (mobileMax && mobileOverlay) {
-    mobileMax.addEventListener('click', e => {
-      e.stopPropagation();
-      mobileOverlay.classList.remove('hidden');
-    });
-  }
+   if (mobileMax && mobileOverlay) {
+     mobileMax.addEventListener("click", e => {
+       e.stopPropagation();
+       mobileOverlay.classList.remove("hidden");
+     });
+   }
 
   if (mobileApply && mobileOverlay) {
-    mobileApply.addEventListener('click', () => {
-      mobileOverlay.classList.add('hidden');
+    mobileApply.addEventListener("click", () => {
+      mobileOverlay.classList.add("hidden");
     });
+  }
+}
+
+function buildSchemeList() {
+  const list = document.getElementById("scheme-list");
+  if (!list || !LIBRARY.schemes.length) return;
+  for (const scheme of LIBRARY.schemes) {
+    const btn = document.createElement("button");
+    btn.className = "scheme-btn";
+    btn.textContent = scheme.label;
+    btn.dataset.schemeId = scheme.id;
+    btn.addEventListener("click", () => {
+      document
+        .querySelectorAll(".scheme-btn")
+        .forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      applyScheme(scheme.id);
+    });
+    list.appendChild(btn);
   }
 }
 
@@ -119,10 +138,11 @@ function init() {
   activateAlwaysOnCapabilities();
   applyDesign();
   wireGlobalButtons();
+  buildSchemeList();
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
 } else {
   init();
 }

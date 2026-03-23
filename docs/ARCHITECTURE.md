@@ -9,8 +9,6 @@ High-level file structure, module graph, and data flow for Scheme Remix Studio.
 ├── README.md
 ├── index.html
 ├── app.css
-├── config-data-files.html   (dev utility: in-browser JSON config editor)
-├── test.html                (dev utility: Phase 6 automated test harness)
 ├── js/
 │   ├── config.js
 │   ├── state.js
@@ -60,8 +58,6 @@ lens.js     ui.js
 - `data/app.config.json` contains app behavior.
 - `data/design.config.json` contains propSets, paramTypes, and lenses.
 - `data/library.json` contains presets and schemes.
-- `config-data-files.html` is a standalone dev tool for editing and downloading `data/*.json` files in-browser. Requires a dev server.
-- `test.html` is a standalone test harness that loads `index.html` in an iframe and runs automated + manual checks.
 
 ## Data Flow
 

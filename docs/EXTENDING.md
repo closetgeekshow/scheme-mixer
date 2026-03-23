@@ -483,8 +483,7 @@ need extending if you add a fourth or fifth lens panel:
 
 ## Step 3 — Test the new lens
 
-1. Open `config-data-files.html` (requires a dev server) to validate your JSON change.
-2. Reload `index.html` — the new lens panel should appear immediately.
+1. Reload `index.html` — the new lens panel should appear immediately.
 3. Drag inside the new lens to pan; scroll to zoom.
 4. Click the ⤢ maximize button to confirm full-screen toggle works.
 5. Click the reset (↺) button to confirm the lens returns to its `originCamera`.
@@ -852,7 +851,6 @@ document.getElementById('btn-scheme-cyberpunk')
 - [ ] Each scheme has a unique `id`
 - [ ] All `presetIds` in a scheme reference existing preset `id` values
 - [ ] All `capabilityLayers` ids are registered in `app.config.json → capabilityLayerRegistry`
-- [ ] JSON validated using `config-data-files.html` (Validate JSON button)
 ```
 ````
 
@@ -1135,8 +1133,7 @@ To disable an always-on effect (e.g., to stop the holo-pan animation):
 ## Primitive Registry
 
 The `primitiveRegistry` array documents all Tier 1 CSS custom properties.
-It is used by developer tooling (`config-data-files.html`) and future
-validation tooling — it has no runtime effect on the app.
+It will be used by future developer tooling — it has no runtime effect on the app.
 
 ```json
 "primitiveRegistry": [
@@ -1164,21 +1161,6 @@ by `buildApp()` in `ui.js`:
 
 ***
 
-## Using the In-Browser Config Editor
-
-`config-data-files.html` provides a visual editor for all three `data/*.json` files.
-It requires a dev server (e.g., `npx serve .` or VS Code Live Server).
-
-1. Open `http://localhost:3000/config-data-files.html`
-2. Select the file tab (`app.config`, `design.config`, or `library`)
-3. Edit the JSON in the textarea
-4. Click **Validate JSON** to check for syntax errors
-5. Click **Download file** to save the result
-6. Replace the corresponding file in the `data/` directory on disk
-7. Reload `index.html` to apply changes
-
-***
-
 ## Checklist
 
 - [ ] `demoActiveDuration` is at least 800ms to allow slow transitions to show
@@ -1186,7 +1168,4 @@ It requires a dev server (e.g., `npx serve .` or VS Code Live Server).
 - [ ] `panClamp` values are symmetric (e.g., `[-1, 1]`) unless an asymmetric viewport is intended
 - [ ] New capability layer entries have a unique `id` matching the `:root` class in `app.css`
 - [ ] New Tier 1 primitives are registered in `primitiveRegistry`
-- [ ] JSON validated with `config-data-files.html` before replacing on disk
-```
-`22`
 

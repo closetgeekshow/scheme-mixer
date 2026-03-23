@@ -59,8 +59,6 @@ All three lenses have a **maximize button** (⛶) that expands them to full view
 closetgeekshow-scheme-mixer/
 ├── index.html               # App shell, <template> declarations, module entry
 ├── app.css                  # Full 18-layer CSS architecture
-├── config-data-files.html   # Dev utility: in-browser JSON config editor
-├── test.html                # Dev utility: Phase 6 automated test harness
 │
 ├── js/
 │   ├── config.js            # Parallel-fetches all three data files; top-level await
@@ -146,18 +144,6 @@ the-component  surf-velvet  shape-pill  depth-raised  mo-elastic  density-normal
 ### Author presets and schemes
 
 Add entries to `data/library.json`. A **preset** is a partial selection (one or more paramType values). A **scheme** composes multiple presets and can activate optional capability layers. No JS or CSS changes are needed — `applyScheme()` in `main.js` reads `library.json` at runtime.
-
----
-
-## Dev Utilities
-
-### Config Editor — `config-data-files.html`
-
-An in-browser JSON editor for all three data files. Load, edit, validate, and download updated configs without leaving the browser. **Requires a dev server** (same reason as the main app).
-
-### Test Harness — `test.html`
-
-Loads `index.html` in an iframe and runs automated checks against the live DOM. Outputs a JSON audit log you can copy and share. Automated checks cover: CSS class integrity, lens maximize/restore, fit-1px toggle, and capability layer activation. Manual checks are pre-logged with instructions for DevTools validation.
 
 ---
 

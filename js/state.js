@@ -1,7 +1,7 @@
 // js/state.js
 // Derived state, caches, and core design application helpers.
 
-import { APP_CONFIG, DESIGN_CONFIG } from './config.js';
+import { APP_CONFIG, DESIGN_CONFIG } from '/js/config.js';
 
 // --- Derived state ---
 

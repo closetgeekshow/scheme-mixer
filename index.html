@@ -21,6 +21,11 @@
         <button id="btn-randomize" class="btn-randomize">Randomize</button>
         <button id="btn-demo" class="btn-demo">Run Demo</button>
       </div>
+      <div class="sidebar-library">
+        <div class="sidebar-section-label">Library</div>
+        <div id="scheme-list" class="scheme-list"></div>
+      </div>
+      
     </aside>
 
     <main id="app" class="app"></main>
@@ -48,7 +53,37 @@
       <div class="popover-content"></div>
     </div>
   </div>
-
-  <script type="module" src="js/main.js"></script>
+  <template id="tpl-component">
+    <div class="the-component">
+      <h2>Design System</h2>
+      <p>A parametric component that responds to every axis of the design system — surface, shape, depth, motion, and density.</p>
+      <div class="comp-actions">
+        <button class="comp-btn">Primary</button>
+        <button class="comp-btn secondary">Secondary</button>
+      </div>
+    </div>
+  </template>
+  <template id="tpl-lens-badge-tl">
+    <div class="lens-badge lens-badge-tl">
+      <span class="lens-desc"></span>
+      <span class="lens-zoom-num"></span>
+    </div>
+  </template>
+  <template id="tpl-lens-badge-bl">
+    <div class="lens-badge lens-badge-bl">
+      <span class="lens-zoom-num"></span>
+      <span class="lens-coords"></span>
+    </div>
+  </template>
+  <template id="tpl-param-item">
+    <div class="param-item">
+      <div class="param-header">
+        <span class="param-label"></span>
+        <button class="param-help-btn" type="button" aria-label="Help">?</button>
+      </div>
+      <select class="param-select"></select>
+    </div>
+  </template>  
+  <script type="module" src="/js/main.js"></script>
 </body>
 </html>

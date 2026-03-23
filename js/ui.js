@@ -1,9 +1,9 @@
 // js/ui.js
 // UI construction: params, sidebar, lenses, popover.
 
-import { APP_CONFIG, DESIGN_CONFIG } from './config.js';
-import { state, componentEls, paramSelectMap, applyDesign } from './state.js';
-import { createLens } from './lens.js';
+import { APP_CONFIG, DESIGN_CONFIG } from '/js/config.js';
+import { state, componentEls, paramSelectMap, applyDesign } from '/js/state.js';
+import { createLens } from '/js/lens.js';
 
 // --- Template references ---
 

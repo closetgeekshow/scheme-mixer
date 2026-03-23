@@ -193,8 +193,8 @@
 }
 
 /* ===========================
-   Shell — Sidebar & Popover
-   =========================== */
+    Shell — Sidebar & Popover
+    =========================== */
 @layer shell.sidebar {
   .sidebar {
     grid-column: 1;
@@ -206,6 +206,53 @@
     padding: 0;
     overflow-y: auto;
     z-index: 20;
+  }
+  
+  .sidebar-library {
+    border-top: 1px solid var(--border);
+    padding: var(--sp-sm) 0;
+    flex-shrink: 0;
+  }
+  
+  .sidebar-section-label {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0 var(--sp-md) var(--sp-xs);
+  }
+  
+  .scheme-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 var(--sp-sm);
+  }
+  
+  .scheme-btn {
+    width: 100%;
+    text-align: left;
+    padding: var(--sp-sm);
+    border-radius: var(--r-sm);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    background: none;
+    border: 1px solid transparent;
+    transition: all 200ms ease;
+  }
+  
+  .scheme-btn:hover {
+    background: var(--accent-bg);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  
+  .scheme-btn.active {
+    background: var(--accent-bg);
+    border-color: var(--accent);
+    color: var(--text);
   }
 
   .sidebar-header {
